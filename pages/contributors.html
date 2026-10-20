@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>贡献者 · 玄武攻略 WIKI</title>
+  <link rel="stylesheet" href="../css/wiki.css?v=20261018a" />
+</head>
+<body data-wiki-depth="1" data-wiki-utility>
+  <div class="wiki-shell">
+    <header class="wiki-header">
+      <button type="button" class="nav-toggle" id="navToggle" aria-label="打开菜单"><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M2.5 5h13M2.5 9h13M2.5 13h13" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></button>
+      <a class="wiki-brand" href="../index.html"><span class="wiki-brand-text">玄武攻略 WIKI</span></a>
+      <div class="wiki-search"><input type="search" id="globalSearch" placeholder="搜索…" /></div>
+    </header>
+    <div class="wiki-body">
+      <aside class="wiki-sidebar" id="sidebar">
+        <nav class="wiki-nav" id="wikiNav" data-active="contributors"></nav>
+      </aside>
+      <main class="wiki-main">
+        <h1>贡献者</h1>
+        <p class="muted">这个 Wiki 的攻略都出自玩家之手 —— 下面每一位，都是上面某篇攻略的作者。</p>
+
+        <section class="wiki-contrib-stats">
+          <div class="wiki-contrib-stat">
+            <span class="wiki-contrib-stat-num" id="statGuides">—</span>
+            <span class="wiki-contrib-stat-label">攻略篇数</span>
+          </div>
+          <div class="wiki-contrib-stat">
+            <span class="wiki-contrib-stat-num" id="statEdits">—</span>
+            <span class="wiki-contrib-stat-label">内容改动</span>
+          </div>
+          <div class="wiki-contrib-stat">
+            <span class="wiki-contrib-stat-num" id="statPeople">—</span>
+            <span class="wiki-contrib-stat-label">贡献者</span>
+          </div>
+        </section>
+
+        <p class="wiki-contrib-note">攻略记在作者名下，「攻略大全」里站内自带的那几篇也算在内。本站现为只读的静态站点，条目纠错与投稿已关闭。</p>
+
+        <ul class="wiki-contrib-list" id="contributorList"></ul>
+
+        <div class="wiki-lib-empty" id="contributorEmpty" hidden>
+          <p>还没有贡献记录。</p>
+          <p class="muted">攻略大全里出现第一篇攻略后，它的作者就会出现在这里。</p>
+        </div>
+
+        <div class="wiki-lib-empty" id="contributorError" hidden>
+          <p>排行榜没能加载出来。</p>
+          <p class="muted">可能是网络或云服务的问题，稍后再试。</p>
+          <p>
+            <button type="button" class="wiki-collab-btn wiki-collab-btn--ghost" id="contributorRetry">重新加载</button>
+          </p>
+        </div>
+
+        <p class="wiki-contrib-foot">榜单按「攻略大全」的攻略作者生成，在浏览器里本地算出来，不联网。</p>
+      </main>
+    </div>
+    <footer class="wiki-footer"><p>玄武攻略 WIKI</p></footer>
+  </div>
+  <script src="../js/search-index.js"></script>
+  <script src="../js/wiki.js?v=20261018a"></script>
+  <script src="../js/site-nav.js"></script>
+</body>
+</html>

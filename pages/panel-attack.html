@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>面板攻击计算 · 玄武攻略 WIKI</title>
+  <link rel="stylesheet" href="../css/wiki.css?v=20261018a" />
+</head>
+<body data-wiki-depth="1" class="panel-calc-page">
+  <div class="wiki-shell">
+    <header class="wiki-header">
+      <button type="button" class="nav-toggle" id="navToggle" aria-label="打开菜单"><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M2.5 5h13M2.5 9h13M2.5 13h13" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></button>
+      <a class="wiki-brand" href="../index.html"><span class="wiki-brand-text">玄武攻略 WIKI</span></a>
+      <div class="wiki-search"><input type="search" id="globalSearch" placeholder="搜索…" /></div>
+    </header>
+    <div class="wiki-body">
+      <aside class="wiki-sidebar" id="sidebar">
+        <nav class="wiki-nav" id="wikiNav" data-active="panel-attack"></nav>
+      </aside>
+      <main class="wiki-main">
+        <div class="breadcrumb"><a href="../index.html">首页</a> / 面板攻击计算</div>
+
+        <header class="panel-calc-hero">
+          <div class="panel-calc-hero-text">
+            <h1>面板攻击计算</h1>
+            <p class="panel-calc-lead">对齐社区表《玄武江湖人物成长和天性与伤害计算》「面板攻击计算」页；改参数即时出结果，无需联网。</p>
+            <p class="panel-calc-source muted" id="paDataSource" hidden></p>
+          </div>
+        </header>
+
+        <div class="panel-calc-layout">
+          <div class="panel-calc-inputs">
+            <section class="wiki-card panel-calc-section panel-calc-form">
+              <div class="panel-calc-section-head">
+                <span class="panel-calc-section-badge">1</span>
+                <h2>角色与武功</h2>
+              </div>
+              <div class="panel-calc-grid panel-calc-grid--wide">
+                <label class="panel-calc-field panel-calc-field--span2">
+                  <span>角色</span>
+                  <select id="paChar"></select>
+                </label>
+                <label class="panel-calc-field">
+                  <span>角色名（技艺公式）</span>
+                  <input type="text" id="paCharName" autocomplete="off" />
+                </label>
+                <label class="panel-calc-field">
+                  <span>攻击成长</span>
+                  <input type="number" id="paAtkGrowth" step="0.01" min="0" />
+                </label>
+                <label class="panel-calc-field panel-calc-field--span2">
+                  <span>武功</span>
+                  <div class="panel-calc-combo" id="paMartialCombo">
+                    <input
+                      type="text"
+                      id="paMartialInput"
+                      class="panel-calc-combo-input"
+                      placeholder="输入武功名搜索…"
+                      autocomplete="off"
+                      spellcheck="false"
+                      role="combobox"
+                      aria-expanded="false"
+                      aria-controls="paMartialList"
+                      aria-autocomplete="list"
+                    />
+                    <ul class="panel-calc-combo-list" id="paMartialList" role="listbox" hidden></ul>
+                    <input type="hidden" id="paMartial" value="" />
+                  </div>
+                </label>
+                <label class="panel-calc-field">
+                  <span>武功威力</span>
+                  <input type="number" id="paSkillPower" min="0" />
+                </label>
+                <label class="panel-calc-field">
+                  <span>武功系数</span>
+                  <input type="number" id="paSkillCoeff" step="0.01" min="0" />
+                </label>
+                <label class="panel-calc-field">
+                  <span>武功爆伤</span>
+                  <input type="number" id="paSkillCrit" step="0.01" min="0" />
+                </label>
+                <label class="panel-calc-field panel-calc-field--span2">
+                  <span>内功</span>
+                  <div class="panel-calc-combo" id="paInternalCombo">
+                    <input
+                      type="text"
+                      id="paInternalInput"
+                      class="panel-calc-combo-input"
+                      placeholder="输入内功名搜索…"
+                      autocomplete="off"
+                      spellcheck="false"
+                      role="combobox"
+                      aria-expanded="false"
+                      aria-controls="paInternalList"
+                      aria-autocomplete="list"
+                    />
+                    <ul class="panel-calc-combo-list" id="paInternalList" role="listbox" hidden></ul>
+                    <input type="hidden" id="paInternal" value="" />
+                  </div>
+                </label>
+                <label class="panel-calc-field">
+                  <span>内功攻击（小数）</span>
+                  <input type="number" id="paInternalPct" step="0.01" min="0" />
+                </label>
+              </div>
+            </section>
+
+            <details class="wiki-card panel-calc-section panel-calc-form panel-calc-fold">
+              <summary class="panel-calc-fold-summary">
+                <span class="panel-calc-section-badge">2</span>
+                <span class="panel-calc-fold-title">任督 · 丹 · 装备</span>
+              </summary>
+              <div class="panel-calc-grid panel-calc-fold-body">
+                <label class="panel-calc-field"><span>攻击丹数量</span><input type="number" id="paPills" min="0" /></label>
+                <label class="panel-calc-field"><span>武功小任督</span><input type="number" id="paSkillSmallRen" min="0" /></label>
+                <label class="panel-calc-field"><span>攻击内功任督</span><input type="number" id="paAtkInternalRen" min="0" /></label>
+                <label class="panel-calc-field"><span>武功大任督</span><input type="number" id="paSkillBigRen" min="0" /></label>
+                <label class="panel-calc-field panel-calc-field--span2">
+                  <span>武器</span>
+                  <div class="panel-calc-combo" id="paWeaponCombo">
+                    <input
+                      type="text"
+                      id="paWeaponInput"
+                      class="panel-calc-combo-input"
+                      placeholder="输入武器名搜索…"
+                      autocomplete="off"
+                      spellcheck="false"
+                      role="combobox"
+                      aria-expanded="false"
+                      aria-controls="paWeaponList"
+                      aria-autocomplete="list"
+                    />
+                    <ul class="panel-calc-combo-list" id="paWeaponList" role="listbox" hidden></ul>
+                    <input type="hidden" id="paWeapon" value="" />
+                  </div>
+                </label>
+                <label class="panel-calc-field panel-calc-field--span2" id="paWeaponForgeField" hidden>
+                  <span>可锻造属性</span>
+                  <div class="panel-calc-combo" id="paWeaponForgeCombo">
+                    <input
+                      type="text"
+                      id="paWeaponForgeInput"
+                      class="panel-calc-combo-input"
+                      placeholder="请先选择武器"
+                      readonly
+                      autocomplete="off"
+                      role="combobox"
+                      aria-expanded="false"
+                      aria-controls="paWeaponForgeList"
+                    />
+                    <ul class="panel-calc-combo-list" id="paWeaponForgeList" role="listbox" hidden></ul>
+                  </div>
+                </label>
+                <label class="panel-calc-field"><span>武器攻击</span><input type="number" id="paWeaponAtk" min="0" /></label>
+                <label class="panel-calc-field"><span>武器攻击%</span><input type="number" id="paWeaponPct" min="0" /></label>
+                <label class="panel-calc-field panel-calc-field--span2">
+                  <span>衣服</span>
+                  <div class="panel-calc-combo" id="paClothCombo">
+                    <input type="text" id="paClothInput" class="panel-calc-combo-input" placeholder="输入衣服名搜索…" autocomplete="off" spellcheck="false" role="combobox" aria-expanded="false" aria-controls="paClothList" aria-autocomplete="list" />
+                    <ul class="panel-calc-combo-list" id="paClothList" role="listbox" hidden></ul>
+                    <input type="hidden" id="paCloth" value="" />
+                  </div>
+                </label>
+                <label class="panel-calc-field"><span>衣服攻击固定</span><input type="number" id="paClothFlat" min="0" value="0" /></label>
+                <label class="panel-calc-field"><span>衣服攻击%</span><input type="number" id="paClothPct" min="0" /></label>
+                <label class="panel-calc-field panel-calc-field--span2">
+                  <span>戒指</span>
+                  <div class="panel-calc-combo" id="paRingCombo">
+                    <input type="text" id="paRingInput" class="panel-calc-combo-input" placeholder="输入戒指名搜索…" autocomplete="off" spellcheck="false" role="combobox" aria-expanded="false" aria-controls="paRingList" aria-autocomplete="list" />
+                    <ul class="panel-calc-combo-list" id="paRingList" role="listbox" hidden></ul>
+                    <input type="hidden" id="paRing" value="" />
+                  </div>
+                </label>
+                <label class="panel-calc-field"><span>戒指攻击固定</span><input type="number" id="paRingFlat" min="0" value="0" /></label>
+                <label class="panel-calc-field"><span>戒指攻击%</span><input type="number" id="paRingPct" min="0" /></label>
+                <label class="panel-calc-field panel-calc-field--span2">
+                  <span>护腕</span>
+                  <div class="panel-calc-combo" id="paBracerCombo">
+                    <input type="text" id="paBracerInput" class="panel-calc-combo-input" placeholder="输入护腕名搜索…" autocomplete="off" spellcheck="false" role="combobox" aria-expanded="false" aria-controls="paBracerList" aria-autocomplete="list" />
+                    <ul class="panel-calc-combo-list" id="paBracerList" role="listbox" hidden></ul>
+                    <input type="hidden" id="paBracer" value="" />
+                  </div>
+                </label>
+                <label class="panel-calc-field"><span>护腕攻击固定</span><input type="number" id="paBracerFlat" min="0" value="0" /></label>
+                <label class="panel-calc-field"><span>护腕攻击%</span><input type="number" id="paBracerPct" min="0" value="0" /></label>
+                <label class="panel-calc-field"><span>其他武功加成%</span><input type="number" id="paOtherSkillBonus" min="0" value="0" /></label>
+              </div>
+            </details>
+
+            <details class="wiki-card panel-calc-section panel-calc-form panel-calc-fold">
+              <summary class="panel-calc-fold-summary">
+                <span class="panel-calc-section-badge">3</span>
+                <span class="panel-calc-fold-title">技艺 · 爆伤（对单）</span>
+              </summary>
+              <div class="panel-calc-grid panel-calc-fold-body">
+                <div class="panel-calc-field">
+                  <div class="panel-calc-label-row">
+                    <label for="paZhuque">朱雀之力</label>
+                    <label class="panel-calc-manual-toggle panel-calc-field-max-toggle" title="等级 300"><input type="checkbox" class="pa-field-max" data-target="paZhuque" /><span>满</span></label>
+                  </div>
+                  <input type="number" id="paZhuque" min="0" />
+                </div>
+                <div class="panel-calc-field">
+                  <div class="panel-calc-label-row">
+                    <label for="paJianyi">剑意</label>
+                    <label class="panel-calc-manual-toggle panel-calc-field-max-toggle" title="等级 300"><input type="checkbox" class="pa-field-max" data-target="paJianyi" /><span>满</span></label>
+                  </div>
+                  <input type="number" id="paJianyi" min="0" />
+                </div>
+                <div class="panel-calc-field">
+                  <div class="panel-calc-label-row">
+                    <label for="paQuanjin">拳劲</label>
+                    <label class="panel-calc-manual-toggle panel-calc-field-max-toggle" title="等级 300"><input type="checkbox" class="pa-field-max" data-target="paQuanjin" /><span>满</span></label>
+                  </div>
+                  <input type="number" id="paQuanjin" min="0" />
+                </div>
+                <div class="panel-calc-field panel-calc-field--span2">
+                  <label for="paJiuyin">九阴奇功（表 E8）</label>
+                  <input type="text" id="paJiuyin" list="paJiuyinE8List" autocomplete="off" />
+                  <datalist id="paJiuyinE8List">
+                    <option value="摧心掌力"></option>
+                    <option value="乱披风剑诀"></option>
+                    <option value="修罗刀诀"></option>
+                    <option value="飞絮暗劲"></option>
+                  </datalist>
+                  <p class="panel-calc-field-hint">男主/女主技艺：摧心 +20%、乱披风/修罗 +10%；爆伤：飞絮暗劲 +0.1（M6）</p>
+                </div>
+                <div class="panel-calc-field">
+                  <div class="panel-calc-label-row">
+                    <label for="paHaoran">浩然正气</label>
+                    <label class="panel-calc-manual-toggle panel-calc-field-max-toggle" title="满级 300（宗泽技艺加成需此项）"><input type="checkbox" class="pa-field-max" data-target="paHaoran" /><span>满</span></label>
+                  </div>
+                  <input type="number" id="paHaoran" min="0" />
+                </div>
+                <div class="panel-calc-field">
+                  <div class="panel-calc-label-row">
+                    <label for="paTiezhi">铁指禅劲</label>
+                    <label class="panel-calc-manual-toggle panel-calc-field-max-toggle" title="等级 300"><input type="checkbox" class="pa-field-max" data-target="paTiezhi" /><span>满</span></label>
+                  </div>
+                  <input type="number" id="paTiezhi" min="0" />
+                </div>
+                <div class="panel-calc-field">
+                  <div class="panel-calc-label-row">
+                    <label for="paWuqin">五禽戏</label>
+                    <label class="panel-calc-manual-toggle panel-calc-field-max-toggle" title="等级 300"><input type="checkbox" class="pa-field-max" data-target="paWuqin" /><span>满</span></label>
+                  </div>
+                  <input type="number" id="paWuqin" min="0" />
+                </div>
+                <div class="panel-calc-field">
+                  <div class="panel-calc-label-row">
+                    <label for="paLongxiang">龙象护体功</label>
+                    <label class="panel-calc-manual-toggle panel-calc-field-max-toggle" title="等级 300"><input type="checkbox" class="pa-field-max" data-target="paLongxiang" /><span>满</span></label>
+                  </div>
+                  <input type="number" id="paLongxiang" min="0" />
+                </div>
+                <div class="panel-calc-field">
+                  <div class="panel-calc-label-row">
+                    <label for="paQitian">齐天棍法</label>
+                    <label class="panel-calc-manual-toggle panel-calc-field-max-toggle" title="等级 300"><input type="checkbox" class="pa-field-max" data-target="paQitian" /><span>满</span></label>
+                  </div>
+                  <input type="number" id="paQitian" min="0" />
+                </div>
+                <label class="panel-calc-field"><span>是否男拳</span>
+                  <select id="paMaleFist"><option value="否">否</option><option value="是">是</option></select>
+                </label>
+                <label class="panel-calc-field"><span>是否拳主</span>
+                  <select id="paFistMain"><option value="否">否</option><option value="是">是</option></select>
+                </label>
+                <label class="panel-calc-field"><span>女主胡休</span>
+                  <select id="paHuFemale"><option value="否">否</option><option value="是">是</option></select>
+                </label>
+                <div class="panel-calc-field">
+                  <div class="panel-calc-label-row">
+                    <label for="paArtsRatioManual">技艺比例（小数）</label>
+                    <label class="panel-calc-manual-toggle" title="勾选后使用下方数值，否则按角色与技艺公式计算">
+                      <input type="checkbox" id="paArtsManual" />
+                      <span>手动</span>
+                    </label>
+                  </div>
+                  <input type="number" id="paArtsRatioManual" step="0.001" min="0" value="0.08" disabled />
+                </div>
+                <label class="panel-calc-field"><span>装备爆伤</span><input type="number" id="paEquipCrit" step="0.01" value="0" /></label>
+                <label class="panel-calc-field"><span>武器爆伤</span><input type="number" id="paWeaponCrit" step="0.01" value="0" /></label>
+                <div class="panel-calc-field">
+                  <div class="panel-calc-label-row">
+                    <label for="paBaihu">白虎之力</label>
+                    <label class="panel-calc-manual-toggle panel-calc-field-max-toggle" title="等级 300"><input type="checkbox" class="pa-field-max" data-target="paBaihu" /><span>满</span></label>
+                  </div>
+                  <input type="number" id="paBaihu" min="0" />
+                </div>
+                <label class="panel-calc-field"><span>书法+童子功</span><input type="number" id="paCalligraphy" step="0.01" value="0" /></label>
+                <label class="panel-calc-field"><span>九阴奇功爆伤</span><input type="number" id="paJiuyinCritSkill" step="0.01" value="0" readonly title="由 E8=飞絮暗劲 时自动为 0.1" /></label>
+                <label class="panel-calc-field"><span>附伤</span><input type="number" id="paExtraDmg" min="0" value="0" /></label>
+              </div>
+              <input type="hidden" id="paMartialName" />
+            </details>
+
+            <details class="wiki-card panel-calc-section panel-calc-formulas panel-calc-fold panel-calc-fold--formulas">
+              <summary class="panel-calc-fold-summary">
+                <span class="panel-calc-fold-title">公式说明</span>
+              </summary>
+              <ul class="panel-calc-formula-list panel-calc-fold-body" id="paFormulaNotes"></ul>
+            </details>
+          </div>
+
+          <aside class="panel-calc-aside" id="paResultWrap" aria-live="polite">
+            <div class="panel-calc-aside-inner wiki-card">
+              <h2 class="panel-calc-aside-title">计算结果</h2>
+              <div id="paResult"></div>
+            </div>
+          </aside>
+        </div>
+      </main>
+    </div>
+    <footer class="wiki-footer"><p>玄武攻略 WIKI</p></footer>
+  </div>
+  <script src="../js/search-index.js"></script>
+  <script src="../js/panel-attack-data.js"></script>
+  <script src="../js/panel-attack-calc.js"></script>
+  <script src="../js/wiki.js?v=20261018a"></script>
+  <script src="../js/site-nav.js"></script>
+  <script>
+    (function () {
+      var notes = (window.PANEL_ATTACK_DATA && window.PANEL_ATTACK_DATA.formulaNotes) || [];
+      var ul = document.getElementById("paFormulaNotes");
+      if (ul) ul.innerHTML = notes.map(function (n) { return "<li>" + n + "</li>"; }).join("");
+      var src = document.getElementById("paDataSource");
+      if (src && window.PANEL_ATTACK_DATA && window.PANEL_ATTACK_DATA.source) {
+        src.textContent = "数据表：" + window.PANEL_ATTACK_DATA.source;
+        src.hidden = false;
+      }
+    })();
+  </script>
+</body>
+</html>

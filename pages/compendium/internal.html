@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>内功图鉴 · 玄武攻略 WIKI</title>
+  <link rel="stylesheet" href="../../css/wiki.css?v=20261018a" />
+</head>
+<body data-wiki-depth="2">
+  <div class="wiki-shell">
+    <header class="wiki-header">
+      <button type="button" class="nav-toggle" id="navToggle" aria-label="打开菜单"><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M2.5 5h13M2.5 9h13M2.5 13h13" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></button>
+      <a class="wiki-brand" href="../../index.html"><span class="wiki-brand-text">玄武攻略 WIKI</span></a>
+      <div class="wiki-search"><input type="search" id="globalSearch" placeholder="搜索…" /></div>
+    </header>
+    <div class="wiki-body">
+      <aside class="wiki-sidebar" id="sidebar">
+        <nav class="wiki-nav" id="wikiNav" data-active="compendium-internal"></nav>
+      </aside>
+      <main class="wiki-main">
+        <div class="breadcrumb"><a href="../../index.html">首页</a> / <a href="../compendium.html">图鉴</a> / 内功</div>
+        <h1>内功图鉴</h1>
+        <section class="wiki-card">
+          <div class="martial-toolbar compendium-sticky-toolbar">
+            <div class="martial-toolbar-line">
+              <div class="martial-filters" role="group" aria-label="品阶">
+                <button type="button" class="martial-filter-btn martial-filter-btn-lead active" data-internal-star="all">品阶</button>
+                <button type="button" class="martial-filter-btn" data-internal-star="C">C</button>
+                <button type="button" class="martial-filter-btn" data-internal-star="B">B</button>
+                <button type="button" class="martial-filter-btn" data-internal-star="A">A</button>
+                <button type="button" class="martial-filter-btn" data-internal-star="S">S</button>
+                <button type="button" class="martial-filter-btn" data-internal-star="?">?</button>
+              </div>
+            </div>
+            <div class="martial-toolbar-line martial-toolbar-search">
+              <label class="martial-search-wrap" for="internalFilter">筛选</label>
+              <input type="search" id="internalFilter" placeholder="名称、词条、配武功…" autocomplete="off" />
+              <span class="martial-count" id="internalCount"></span>
+            </div>
+          </div>
+          <div class="martial-card-list" id="internalCardList"></div>
+        </section>
+      </main>
+    </div>
+    <footer class="wiki-footer"><p>玄武攻略 WIKI</p></footer>
+  </div>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/wiki.js?v=20261018a"></script>
+  <script src="../../js/compendium-toolbar.js"></script>
+  <script src="../../js/site-nav.js"></script>
+  <script src="../../js/compendium-query.js"></script>
+  <script src="../../js/internal-compendium-data.js"></script>
+  <script src="../../js/internal-compendium-render.js?v=20261018a"></script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+# 统一换行符，避免 Windows 上提交后整仓库出现「全文件已修改」的假 diff
+* text=auto eol=lf
+
+# 二进制资源不要被当成文本处理
+*.png binary
+*.webp binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.woff binary
+*.woff2 binary
+
+# Windows 批处理必须保留 CRLF
+*.bat text eol=crlf
+*.cmd text eol=crlf

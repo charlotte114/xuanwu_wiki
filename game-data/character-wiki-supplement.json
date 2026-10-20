@@ -1,0 +1,346 @@
+{
+  "entries": [
+    {
+      "name": "玉观音",
+      "match": ["玉观音"],
+      "martialType": "刀",
+      "tier": 1,
+      "talentWiki": "增加 15% 免伤。",
+      "obtain": "聚宝阁 1000 元宝。"
+    },
+    {
+      "name": "宣赞",
+      "match": ["宣赞"],
+      "martialType": "刀",
+      "tier": 2,
+      "talentWiki": "使用主动恢复技能（如蔡/柳天赋）时 20% 概率抢夺回复效果，并给予自身三回合 30% 回复效果。",
+      "obtain": "苏州虎丘山邀请入队，需交付 10 子午万寿丹。"
+    },
+    {
+      "name": "司徒莹",
+      "match": ["司徒莹"],
+      "martialType": "拳",
+      "tier": 3,
+      "talentWiki": "减少 10% 武学突破所消耗阅历。",
+      "obtain": "朝廷线好结局获取。"
+    },
+    {
+      "name": "徐小虎",
+      "match": ["店小二"],
+      "martialType": "拳",
+      "tier": 4,
+      "talentWiki": "战斗中首发且结束战斗未死亡，增加 10% 银两掉落。",
+      "obtain": "88 级直接招募成都店小二入队。"
+    },
+    {
+      "name": "萧含烟",
+      "match": ["萧含烟"],
+      "martialType": "刀",
+      "tier": 5,
+      "talentWiki": "免疫全部异常状态。",
+      "obtain": "聚宝阁 1000 元宝。"
+    },
+    {
+      "name": "张祈若",
+      "match": ["张祈若"],
+      "martialType": "剑",
+      "tier": 6,
+      "talentWiki": "每波新敌人出现时回复全队 10% 血量。",
+      "obtain": "江湖线好结局获取。"
+    },
+    {
+      "name": "商昊乾",
+      "match": ["商昊乾"],
+      "martialType": "刀",
+      "tier": 7,
+      "talentWiki": "血量首次低于 50% 时增加 30% 攻击。",
+      "obtain": "聚宝阁 1000 元宝。"
+    },
+    {
+      "name": "龙戍雪",
+      "match": ["龙戍雪"],
+      "martialType": "拳",
+      "tier": 8,
+      "talentWiki": "主角出手时 25% 概率自身再出手一次。",
+      "obtain": "无间暗狱血衣神捕掉落神捕风云录，阅读完后到洛阳酒馆对话获取。"
+    },
+    {
+      "name": "甘凌",
+      "match": ["甘凌"],
+      "martialType": "剑",
+      "tier": 9,
+      "talentWiki": "在聚宝阁 1 元宝购买提高 8% 免伤、吸血、攻击、暴击。",
+      "obtain": "聚宝阁 1000 元宝。"
+    },
+    {
+      "name": "孙齐",
+      "match": ["孙齐"],
+      "martialType": "拳",
+      "tier": 10,
+      "talentWiki": "可使用任意类型武器。",
+      "obtain": "聚宝阁 1000 元宝。"
+    },
+    {
+      "name": "竹心",
+      "match": ["竹心"],
+      "martialType": "拳",
+      "tier": 11,
+      "talentWiki": "所有攻击都有 10% 概率眩晕男性目标 1 回合。",
+      "obtain": "福州铁匠铺和苏州罗汉洞接引人处购买龙凤戒交给福州乌山洪老九后，到其家中获取折扇；福州码头船工打听趣事后到琉球馆对话竹心给与折扇后入队。"
+    },
+    {
+      "name": "神秘女侠",
+      "match": ["神秘女侠"],
+      "martialType": "剑",
+      "tier": 12,
+      "talentWiki": "玄冰针：秒杀血量低于 40% 的敌人；未低于 40% 则造成总血量 15% 伤害。",
+      "obtain": "聚宝阁 1000 元宝。"
+    },
+    {
+      "name": "李一尘",
+      "match": ["李一尘"],
+      "martialType": "剑",
+      "tier": 13,
+      "talentWiki": "主动回血 20% 后增加 30% 攻击二回合。",
+      "obtain": "聚宝阁 1000 元宝。"
+    },
+    {
+      "name": "杜月寒",
+      "match": ["杜月寒"],
+      "martialType": "剑",
+      "tier": 14,
+      "talentWiki": "攻击带有异常 buff 的对手时乘法增伤 20%。",
+      "obtain": "获取宗泽和林清舞后凤门打听触发；烟波楼打听后到太乙回雁楼对话；王闻远概率出现在洛阳擂台、烟波楼、贾老二家，击杀后到太乙回雁楼对话，等待 15 分钟后在虎门对话入队。"
+    },
+    {
+      "name": "蔡半仙",
+      "match": ["蔡半仙"],
+      "martialType": "拳",
+      "tier": 15,
+      "talentWiki": "战斗中可主动给队友回血 30%+500，共两次。",
+      "obtain": "聚宝阁 1000 元宝。"
+    },
+    {
+      "name": "宗泽",
+      "match": ["宗泽"],
+      "martialType": "刀",
+      "tier": 16,
+      "talentWiki": "战斗中死亡即刻复活并回复 50% 血量（流血致死无法复活）。",
+      "obtain": "凤门打听一周年纪念角色；苏州宗提举打听后在虎丘山最里面怪处对话宗泽，帮苏州北边农民完成播种并再清理虎丘山怪，到宗府内对话入队。"
+    },
+    {
+      "name": "叶银屏",
+      "match": ["叶银屏"],
+      "martialType": "剑",
+      "tier": 17,
+      "talentWiki": "战斗中首发且结束战斗未死亡，增加 5% 阅历掉落。",
+      "obtain": "聚宝阁 1000 元宝。"
+    },
+    {
+      "name": "冷清秋",
+      "match": ["冷清秋"],
+      "martialType": "拳",
+      "tier": 18,
+      "talentWiki": "自身战斗后额外获取 3% 经验。",
+      "obtain": "聚宝阁 1000 元宝。"
+    },
+    {
+      "name": "孙谊",
+      "match": ["孙谊"],
+      "martialType": "刀",
+      "tier": 19,
+      "talentWiki": "血量低于 35% 后增加 20% 闪避。",
+      "obtain": "聚宝阁 1000 元宝。"
+    },
+    {
+      "name": "林清舞",
+      "match": ["林清舞"],
+      "martialType": "拳",
+      "tier": 20,
+      "talentWiki": "20%–30% 概率出手后追加单体伤害「钧天舞」双段双破（系数 0.2+0.8），自带爆伤 150%、15% 眩晕。",
+      "obtain": "获取宗泽后凤门打听；司徒影处取书信，泰山对话林清舞；天云子处 50000 银子买天魔九舞后发现是假的，揍天云子拿回银子；华山宁女侠处以随机 B 剑法（可 home）换天魔九舞交给林清舞入队。"
+    },
+    {
+      "name": "顾纯钧",
+      "match": ["顾纯钧"],
+      "martialType": "剑",
+      "tier": 21,
+      "talentWiki": "全部攻击 20% 概率降低敌方 15% 攻击。",
+      "obtain": "聚宝阁 1000 元宝。"
+    },
+    {
+      "name": "石映寒",
+      "match": ["石映寒"],
+      "martialType": "拳",
+      "tier": 22,
+      "talentWiki": "主动获取两回合 300% 攻击增幅，但每回合失去最大血量 50%。",
+      "obtain": "聚宝阁 3000 元宝名俊包。"
+    },
+    {
+      "name": "叶神机",
+      "match": ["叶神机"],
+      "martialType": "刀",
+      "tier": 23,
+      "talentWiki": "主动丢雷炸相邻 3 人，伤害极低，50% 眩晕 1 回合。",
+      "obtain": "聚宝阁 1000 元宝。"
+    },
+    {
+      "name": "唐雨晨",
+      "match": ["唐雨晨"],
+      "martialType": "剑",
+      "tier": 24,
+      "talentWiki": "主动发射 27 银针随机攻击，每针 3%+200 伤害（会空），概率造成 2% 流血两回合。",
+      "obtain": "聚宝阁 1000 元宝。"
+    },
+    {
+      "name": "荆枫",
+      "match": ["荆枫"],
+      "martialType": "剑",
+      "tier": 25,
+      "talentWiki": "锁定血量最低敌人为攻击主目标。",
+      "obtain": "聚宝阁 1000 元宝。"
+    },
+    {
+      "name": "清月",
+      "match": ["清月"],
+      "martialType": "剑",
+      "tier": 26,
+      "talentWiki": "增加 10% 闪避。",
+      "obtain": "男主后宫人生目标。"
+    },
+    {
+      "name": "希尔薇",
+      "match": ["曦珥薇"],
+      "martialType": "拳",
+      "tier": 27,
+      "talentWiki": "自身战斗后额外获取 5% 经验。",
+      "obtain": "购买洛阳家宅后家宅内打听管家触发，医术 300 后治病且拉满好感度入队。"
+    },
+    {
+      "name": "胡休",
+      "match": ["胡休"],
+      "martialType": "拳",
+      "tier": 28,
+      "talentWiki": "队友挨打时，若自己不是被攻击目标，50% 为队友挡刀。",
+      "obtain": "主线获取。"
+    },
+    {
+      "name": "老田",
+      "match": ["老田"],
+      "martialType": "刀",
+      "tier": 29,
+      "talentWiki": "队友每有一名女性增加 8 攻击。",
+      "obtain": "洛阳酒馆触发支线打一架后结拜入队。"
+    },
+    {
+      "name": "水云深",
+      "match": ["水云深"],
+      "martialType": "拳",
+      "tier": 30,
+      "talentWiki": "死亡后随机召唤小宠物出战，继承本体 100% 其余属性、70% 血量。【金煌】出手时 70% 再次行动；【青影】受击时 50% 复制反击；【朱煞】入场时增强本体攻击/速度 2 回合。",
+      "obtain": "聚宝阁 1000 元宝。"
+    },
+    {
+      "name": "莫声谷",
+      "match": ["莫声谷"],
+      "martialType": "剑",
+      "tier": 31,
+      "talentWiki": "女队友挨打时，若自己不是被攻击目标，80% 为女队友挡刀。",
+      "obtain": "女主后宫人生目标。"
+    },
+    {
+      "name": "男主",
+      "match": [],
+      "martialType": "主角",
+      "tier": 32,
+      "hpXZ": 1,
+      "powerXZ": 1,
+      "wikiOnly": true,
+      "talentWiki": "每减少 1% 血量增加 1% 攻击。",
+      "obtain": "创角主角。"
+    },
+    {
+      "name": "花和尚",
+      "match": ["花和尚"],
+      "martialType": "刀",
+      "tier": 33,
+      "talentWiki": "战斗极低概率获取 1 元宝。",
+      "obtain": "开局送首充大礼包开启获取。"
+    },
+    {
+      "name": "张祁连",
+      "match": ["张祁连"],
+      "martialType": "拳",
+      "tier": 34,
+      "talentWiki": "战斗时主动扔 2 发石头，每发 4%+50 伤害，可用三次。",
+      "obtain": "开局三选一。"
+    },
+    {
+      "name": "柳如意",
+      "match": ["柳如意"],
+      "martialType": "剑",
+      "tier": 35,
+      "talentWiki": "战斗中主动给队友回血 25%+200，一次。",
+      "obtain": "汉阳客栈对话；惯偷阿七家翻找药王本草经给柳；洛阳裁缝店对话；小乞丐处 3000 银子购买药王本草经给柳入队。"
+    },
+    {
+      "name": "厉若海",
+      "match": ["历若海"],
+      "martialType": "刀",
+      "tier": 36,
+      "talentWiki": "10% 超绝暴击。",
+      "obtain": "开局三选一。"
+    },
+    {
+      "name": "芙蓉夏蝉",
+      "match": ["芙蓉夏蝉"],
+      "martialType": "剑",
+      "tier": 37,
+      "talentWiki": "受到男性攻击减半，女性攻击翻倍。",
+      "obtain": "洛阳主线获取。"
+    },
+    {
+      "name": "苏念雪",
+      "match": ["苏念雪"],
+      "martialType": "剑",
+      "tier": 38,
+      "talentWiki": "每回合攻击两次。",
+      "obtain": "开局三选一。"
+    },
+    {
+      "name": "净仪",
+      "match": ["净仪"],
+      "martialType": "剑",
+      "tier": 39,
+      "talentWiki": "2% 免伤。",
+      "obtain": "聚宝阁 1000 元宝。"
+    },
+    {
+      "name": "女主",
+      "match": [],
+      "martialType": "主角",
+      "tier": 40,
+      "hpXZ": 1,
+      "powerXZ": 0.45,
+      "wikiOnly": true,
+      "talentWiki": "每回合 95% 攻击 2 次。",
+      "obtain": "创角主角。"
+    },
+    {
+      "name": "王妙龄",
+      "match": ["王妙铃"],
+      "martialType": "拳",
+      "tier": 41,
+      "talentWiki": "出手后抵挡 1 段伤害。",
+      "obtain": "帝王线好结局获取。"
+    },
+    {
+      "name": "青虫儿",
+      "match": ["青虫儿"],
+      "martialType": "剑",
+      "tier": 42,
+      "talentWiki": "5 格挡。",
+      "obtain": "成都鬼市 10 银子购买。"
+    }
+  ]
+}

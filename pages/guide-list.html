@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#f4efe4" />
+  <title>攻略大全 · 玄武攻略 WIKI</title>
+  <link rel="stylesheet" href="../css/wiki.css?v=20261018a" />
+</head>
+<body data-wiki-depth="1">
+  <div class="wiki-shell">
+    <header class="wiki-header">
+      <button type="button" class="nav-toggle" id="navToggle" aria-label="打开菜单"><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M2.5 5h13M2.5 9h13M2.5 13h13" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></button>
+      <a class="wiki-brand" href="../index.html"><span class="wiki-brand-text">玄武攻略 WIKI</span></a>
+      <div class="wiki-search"><input type="search" id="globalSearch" placeholder="搜索…" /></div>
+    </header>
+    <div class="wiki-body">
+      <aside class="wiki-sidebar" id="sidebar">
+        <nav class="wiki-nav" id="wikiNav" data-active="guide-list"></nav>
+      </aside>
+      <main class="wiki-main">
+        <h1>攻略大全</h1>
+        <p class="muted">全站攻略都在这一页，按更新时间排序。建议阅读顺序：全攻略（总览）→ 开局入门（前期）→ 武器获取；技艺见 <a href="compendium/arts.html">技艺图鉴</a>。</p>
+
+        <section class="wiki-card wiki-lib-toolbar">
+          <div class="wiki-lib-controls">
+            <input type="search" id="guideLibSearch" class="wiki-lib-search" placeholder="搜标题、作者、标签…" aria-label="搜索攻略" />
+            <select id="guideLibSort" class="wiki-lib-sort" aria-label="排序方式"></select>
+            <span class="wiki-lib-count" id="guideLibCount">正在载入…</span>
+          </div>
+          <div class="wiki-lib-filter">
+            <span class="wiki-lib-filter-label">分类</span>
+            <div class="wiki-lib-chips" id="guideLibCats"></div>
+          </div>
+          <div class="wiki-lib-filter">
+            <span class="wiki-lib-filter-label">标签</span>
+            <div class="wiki-lib-chips" id="guideLibTags" hidden></div>
+          </div>
+        </section>
+
+        <div class="wiki-lib-body" id="guideLibList"></div>
+
+        <div class="wiki-lib-empty" id="guideLibEmpty" hidden>
+          <p id="guideLibEmptyTitle">没有匹配的攻略。</p>
+          <p class="muted" id="guideLibEmptyHint">换个关键词试试，或者把筛选条件清空。</p>
+          <p id="guideLibEmptyAction">
+            <button type="button" class="wiki-collab-btn wiki-collab-btn--ghost" id="guideLibReset">清空筛选条件</button>
+            <button type="button" class="wiki-collab-btn wiki-collab-btn--primary" id="guideLibRetry" hidden>重新加载</button>
+          </p>
+        </div>
+
+        <section class="wiki-card">
+          <h2>工具</h2>
+          <table class="link-table">
+            <tbody>
+              <tr>
+                <td><span class="tag tag-res">工具</span></td>
+                <td><a href="panel-attack.html">面板攻击计算</a> <span class="muted">· 人物成长 xlsx 公式</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <p class="muted">本站现在是只读的静态站点，投稿与审稿入口已关闭；想补充或纠错，欢迎在群里反馈。</p>
+      </main>
+    </div>
+    <footer class="wiki-footer"><p>玄武攻略 WIKI</p></footer>
+  </div>
+  <script src="../js/search-index.js"></script>
+  <script src="../js/wiki.js?v=20261018a"></script>
+  <script src="../js/site-nav.js"></script>
+</body>
+</html>

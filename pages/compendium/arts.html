@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>技艺图鉴 · 玄武攻略 WIKI</title>
+  <link rel="stylesheet" href="../../css/wiki.css?v=20261018a" />
+</head>
+<body data-wiki-depth="2">
+  <div class="wiki-shell">
+    <header class="wiki-header">
+      <button type="button" class="nav-toggle" id="navToggle" aria-label="打开菜单"><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M2.5 5h13M2.5 9h13M2.5 13h13" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></button>
+      <a class="wiki-brand" href="../../index.html"><span class="wiki-brand-text">玄武攻略 WIKI</span></a>
+      <div class="wiki-search"><input type="search" id="globalSearch" placeholder="搜索…" /></div>
+    </header>
+    <div class="wiki-body">
+      <aside class="wiki-sidebar" id="sidebar">
+        <nav class="wiki-nav" id="wikiNav" data-active="compendium-arts"></nav>
+      </aside>
+      <main class="wiki-main skills-guide-page">
+        <div class="breadcrumb"><a href="../../index.html">首页</a> / <a href="../compendium.html">图鉴</a> / 技艺</div>
+        <header class="article-header">
+          <h1>技艺图鉴</h1>
+        </header>
+        <div class="guide-related wiki-card">
+          相关：<a href="../../articles/full-guide-xuanwu.html#技艺介绍">全攻略 · 技艺章</a> ·
+          <a href="../../articles/beginner-master.html#技艺提升">开局 · 技艺提升</a> ·
+          <a href="skills.html">武功图鉴</a>
+        </div>
+
+        <div class="skill-toolbar compendium-sticky-toolbar">
+          <div class="skill-filters" role="tablist">
+            <button type="button" class="skill-filter-btn active" data-skill-filter="all">全部</button>
+            <button type="button" class="skill-filter-btn" data-skill-filter="role">主角</button>
+            <button type="button" class="skill-filter-btn" data-skill-filter="partner">伙伴</button>
+            <button type="button" class="skill-filter-btn" data-skill-filter="team">全队</button>
+            <button type="button" class="skill-filter-btn" data-skill-filter="debuff">负面</button>
+          </div>
+          <input type="search" id="skillPageSearch" class="skill-page-search" placeholder="在本页搜索技能名、坐标…" />
+          <span class="skill-count" id="skillCount"></span>
+        </div>
+
+        <div class="skill-card-list" id="skillCardList"></div>
+      </main>
+    </div>
+    <footer class="wiki-footer"><p>玄武攻略 WIKI</p></footer>
+  </div>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/wiki.js?v=20261018a"></script>
+  <script src="../../js/compendium-toolbar.js"></script>
+  <script src="../../js/site-nav.js"></script>
+  <script src="../../js/compendium-query.js"></script>
+  <script src="../../js/skills-guide-data.js"></script>
+  <script src="../../js/skills-guide.js"></script>
+</body>
+</html>

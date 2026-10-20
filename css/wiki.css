@@ -1,0 +1,7797 @@
+/* ============================================================================
+   玄武攻略 WIKI — 视觉系统
+   取色依据是站内那张「龟蛇玄武」插画本身：青绿的龟身、赭金的龟甲与题字、
+   朱砂的爪，衬在米黄宣纸上。整站的世界就是这四色加墨色，不再是通用蓝。
+   ========================================================================== */
+:root {
+  /* —— 纸：由浅到深，同一张纸上叠不同层的签 —— */
+  --bg: #f4efe4;
+  --bg-elevated: #ece5d6;
+  --bg-card: #fdfaf3;
+  --bg-deep: #e4dbca;
+  --border: #dad0bd;
+  --border-strong: #c5b9a1;
+
+  /* —— 墨：正文与次级文字的暖黑 —— */
+  --text: #1d2422;
+  --text-muted: #5f6a64;
+  --text-faint: #8b918a;
+
+  /* —— 青（玄武）：主色。链接、选中、主按钮 —— */
+  --accent: #2f6b5e;
+  --accent-strong: #235247;
+  --accent-soft: rgba(47, 107, 94, 0.1);
+
+  /* —— 赭金：龟甲与题字。用于强调与「副本」 —— */
+  --ochre: #b8862b;
+  --ochre-ink: #8a6314;
+  --ochre-soft: rgba(184, 134, 43, 0.12);
+
+  /* —— 朱砂：印色。用于「攻略」与警示 —— */
+  --cinnabar: #ab3d27;
+  --cinnabar-soft: rgba(171, 61, 39, 0.09);
+
+  /* —— 靛与紫棠：地图与图鉴的区分色 —— */
+  --indigo: #3c5a78;
+  --plum: #6b5b8a;
+
+  /* 栏目色（沿用旧变量名，全站自动跟随） */
+  --tag-guide: var(--cinnabar);
+  --tag-res: var(--accent);
+  --tag-dungeon: var(--ochre-ink);
+  --tag-compendium: var(--plum);
+
+  --header-h: 56px;
+  --sidebar-w: 224px;
+
+  /* 直角偏硬、圆角偏软；宣纸上的印与签都带一点方，取 4px */
+  --radius: 4px;
+  --radius-sm: 2px;
+  --radius-lg: 8px;
+
+  /* 暖调投影：纸压在纸上的影子是褐的，不是灰的 */
+  --lift-1: 0 1px 1px rgba(74, 58, 34, 0.05), 0 2px 6px rgba(74, 58, 34, 0.05);
+  --lift-2: 0 2px 4px rgba(74, 58, 34, 0.07), 0 10px 26px rgba(74, 58, 34, 0.08);
+  --lift-3: 0 4px 10px rgba(74, 58, 34, 0.09), 0 20px 48px rgba(74, 58, 34, 0.13);
+
+  /* 正文行宽：中文一个字约 1em，42em ≈ 42 字一行，落在 30–45 字的舒适区间 */
+  --measure: 42em;
+
+  /* 显示字体走中文衬线（宋/明朝体），正文走无衬线；两者刻意不同族 */
+  --font-display: "Noto Serif SC", "Source Han Serif SC", "Songti SC", "STSong", "SimSun", "Song", ui-serif, serif;
+  --font-body: "Noto Sans SC", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: ui-monospace, "SFMono-Regular", "Cascadia Mono", Consolas, monospace;
+  --font: var(--font-body);
+
+  --focus: 0 0 0 2px var(--bg), 0 0 0 4px rgba(47, 107, 94, 0.55);
+
+  /* 宣纸纤维：内联 SVG 噪声，一次声明处处可用 */
+  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.055'/%3E%3C/svg%3E");
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--text);
+  background-color: var(--bg);
+  background-image: var(--grain);
+  background-size: 160px 160px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  caret-color: var(--cinnabar);
+}
+
+/* 标题一律用衬线，且与正文拉开字重与尺度的层次 */
+h1,
+h2,
+h3,
+h4,
+.wiki-brand-text,
+.hero-banner h1,
+.home-section-title,
+.wiki-card h2,
+.page-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+}
+
+/* 浏览器自带的那些「没人画过」的表面，也归属这套世界 */
+::selection {
+  background: rgba(171, 61, 39, 0.18);
+  color: var(--text);
+}
+
+:focus-visible {
+  outline: none;
+  box-shadow: var(--focus);
+  border-radius: var(--radius-sm);
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+summary:focus-visible {
+  outline: none;
+  box-shadow: var(--focus);
+}
+
+/* 滚动条：细、暖、贴着纸色 */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+}
+
+::-webkit-scrollbar {
+  width: 11px;
+  height: 11px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border: 3px solid var(--bg);
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-faint);
+}
+
+/* 正文数字用等宽，表格与统计对得齐 */
+.wiki-contrib-stat-num,
+.panel-calc-stat-value,
+.panel-calc-result dd,
+.char-growth-inline,
+time,
+.data-table td,
+.data-table th {
+  font-variant-numeric: tabular-nums;
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+  text-underline-offset: 0.22em;
+  text-decoration-thickness: 1px;
+}
+
+a:hover {
+  text-decoration: underline;
+  text-decoration-color: rgba(47, 107, 94, 0.55);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+.wiki-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.wiki-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  height: var(--header-h);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 16px;
+  background: linear-gradient(180deg, #ffffff 0%, #f8f9fb 100%);
+  border-bottom: 1px solid var(--border);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.04);
+}
+
+.nav-toggle {
+  display: none;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 6px;
+  padding: 6px 10px;
+  cursor: pointer;
+}
+
+.wiki-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text);
+  text-decoration: none;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.wiki-brand:hover {
+  text-decoration: none;
+}
+
+/* 页头品牌曾经是一枚 32px 的玄武小图（还带无限旋转），在那个尺寸下糊成一团，
+   已去掉——页头只留站名。相关规则与 wiki-logo-spin 动画一并不用了。 */
+
+.wiki-search {
+  flex: 1;
+  max-width: 480px;
+  margin-left: auto;
+}
+
+.wiki-search-anchor {
+  position: relative;
+}
+
+.wiki-search-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.wiki-search-wrap input {
+  flex: 1;
+  min-width: 0;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background: #f5f6f8;
+  color: var(--text);
+  font-size: 14px;
+}
+
+.wiki-search input {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background: #f5f6f8;
+  color: var(--text);
+  font-size: 14px;
+}
+
+.wiki-search-wrap input:focus,
+.wiki-search input:focus {
+  outline: 2px solid var(--accent-soft);
+  border-color: var(--accent);
+}
+
+.wiki-search-btn {
+  flex-shrink: 0;
+  padding: 8px 14px;
+  border: none;
+  border-radius: 20px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.wiki-search-btn:hover {
+  filter: brightness(1.05);
+}
+
+.wiki-search-btn:active {
+  filter: brightness(0.95);
+}
+
+.wiki-search-suggest {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  z-index: 250;
+  max-height: min(320px, 50vh);
+  overflow-y: auto;
+  padding: 6px;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 10px 32px rgba(15, 23, 42, 0.12);
+}
+
+.wiki-search-suggest-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+  padding: 9px 12px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  font-family: inherit;
+  font-size: 14px;
+  text-align: left;
+  cursor: pointer;
+  color: var(--text);
+}
+
+.wiki-search-suggest-item:hover,
+.wiki-search-suggest-item.is-active {
+  background: var(--accent-soft);
+}
+
+.wiki-search-suggest-title {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 500;
+}
+
+.wiki-search-suggest-meta {
+  flex-shrink: 0;
+  font-size: 11px;
+  color: var(--text-muted);
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--bg-elevated);
+}
+
+.wiki-body {
+  display: flex;
+  flex: 1;
+  max-width: 1280px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.wiki-sidebar {
+  width: var(--sidebar-w);
+  flex-shrink: 0;
+  padding: 16px 12px;
+  border-right: 1px solid var(--border);
+  background: var(--bg-elevated);
+}
+
+.wiki-nav .nav-section {
+  margin: 12px 0 6px;
+  font-size: 12px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.wiki-nav .nav-link {
+  display: block;
+  padding: 8px 10px;
+  border-radius: 6px;
+  color: var(--text);
+  font-size: 14px;
+}
+
+.wiki-nav .nav-link:hover {
+  background: var(--accent-soft);
+  text-decoration: none;
+}
+
+.wiki-nav .nav-link.active {
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.sidebar-note {
+  margin-top: 24px;
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.wiki-main {
+  flex: 1;
+  padding: 20px 24px 40px;
+  min-width: 0;
+}
+
+.hero-banner {
+  position: relative;
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: calc(var(--radius) + 2px);
+  padding: 28px 28px 26px;
+  margin-bottom: 24px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.hero-text {
+  position: relative;
+  z-index: 1;
+}
+
+.hero-kicker {
+  margin: 0 0 6px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.hero-banner h1 {
+  margin: 0 0 10px;
+  font-size: 1.85rem;
+  letter-spacing: 0.02em;
+}
+
+.hero-lead {
+  margin: 0 0 8px;
+  max-width: 36em;
+  color: var(--text-muted);
+  font-size: 15px;
+}
+
+.hero-banner p {
+  margin: 0 0 6px;
+  color: var(--text-muted);
+}
+
+.meta-line {
+  font-size: 13px !important;
+  margin-bottom: 16px !important;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.hero-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 18px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  border: 1px solid var(--border);
+  background: #fff;
+  color: var(--text);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.hero-btn:hover {
+  text-decoration: none;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+}
+
+.hero-btn--primary {
+  background: linear-gradient(135deg, #00a1d6 0%, #0088b8 100%);
+  border-color: transparent;
+  color: #fff;
+}
+
+.hero-btn--compendium {
+  border-color: rgba(124, 108, 240, 0.35);
+  color: #5b4dc9;
+}
+
+.hero-btn--weapons {
+  border-color: rgba(242, 93, 142, 0.35);
+  color: #c2185b;
+}
+
+.hero-btn--tools {
+  border-color: rgba(240, 180, 41, 0.45);
+  color: #9a7209;
+}
+
+.hero-btn--contributors {
+  border-color: rgba(230, 152, 40, 0.5);
+  color: #b37400;
+}
+
+.hero-spotlight {
+  margin: 14px 0 0 !important;
+  padding: 10px 14px;
+  font-size: 13px !important;
+  background: rgba(255, 255, 255, 0.75);
+  border: 1px dashed rgba(0, 161, 214, 0.35);
+  border-radius: var(--radius);
+  color: var(--text-muted) !important;
+}
+
+.hero-spotlight a {
+  font-weight: 600;
+}
+
+.home-section {
+  margin-bottom: 28px;
+}
+
+.home-section-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.home-section-title {
+  margin: 0;
+  font-size: 1.15rem;
+  padding-left: 12px;
+  border-left: 4px solid var(--accent);
+}
+
+.home-section-title--guide {
+  border-left-color: var(--tag-guide);
+}
+
+.home-section-title--compendium {
+  border-left-color: var(--tag-compendium);
+}
+
+.home-section-title--map {
+  border-left-color: var(--accent);
+}
+
+.home-section-title--dungeon {
+  border-left-color: var(--tag-dungeon);
+}
+
+.home-section-more {
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.home-tile-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(168px, 1fr));
+  gap: 12px;
+}
+
+/* 首页各栏目固定「一排 5 个」，第 6 个起按从左到右的顺序换到第二行。
+   这里不能随着窗口变窄退回 3~4 列：那样「副本」（8 个）会排在
+   「游戏攻略」「世界地图」（各 5 个）之下多出一排，看着就成了「一排排」。
+   窄屏靠缩小方块内的留白与字号来维持 5 列，见文件后段的尺寸档位。 */
+.home-tile-grid--row5,
+.home-dungeon-nav {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+/* 兜底：首页方块本该被网格容器（.home-tile-grid）包住。一旦容器因内容编辑、
+   清洗或回填而丢失，方块会直接躺在栏目的 div 里，变成通栏一行行。
+   这里用 :has() 直接把这种情况下也排成「一排 5 个」，让版式不依赖内容是否完好。 */
+.home-section:has(> a.home-tile) {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.home-section:has(> a.home-tile) > .home-section-head {
+  grid-column: 1 / -1;
+}
+
+@media (max-width: 1024px) {
+  .home-section:has(> a.home-tile) {
+    gap: 10px;
+  }
+}
+
+@media (max-width: 860px) {
+  .home-section:has(> a.home-tile) {
+    gap: 9px;
+  }
+}
+
+@media (max-width: 560px) {
+  .home-section:has(> a.home-tile) {
+    gap: 7px;
+  }
+}
+
+.home-tile {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 14px 14px 12px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  text-decoration: none;
+  color: var(--text);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.home-tile:hover {
+  text-decoration: none;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(15, 23, 42, 0.08);
+}
+
+.home-tile--guide:hover {
+  border-color: rgba(242, 93, 142, 0.45);
+}
+
+.home-tile--compendium:hover {
+  border-color: rgba(124, 108, 240, 0.45);
+}
+
+.home-tile--map:hover {
+  border-color: rgba(0, 161, 214, 0.45);
+}
+
+.home-tile--dungeon:hover {
+  border-color: rgba(240, 180, 41, 0.55);
+}
+
+.home-tile-tag {
+  align-self: flex-start;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 4px;
+  color: #fff;
+}
+
+.home-tile--guide .home-tile-tag {
+  background: var(--tag-guide);
+}
+
+.home-tile--compendium .home-tile-tag {
+  background: var(--tag-compendium);
+}
+
+.home-tile--map .home-tile-tag {
+  background: var(--accent);
+}
+
+.home-tile--dungeon .home-tile-tag {
+  background: var(--tag-dungeon);
+}
+
+.home-tile-title {
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.home-tile-desc {
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--text-muted);
+}
+
+/* 首页方块在窄屏下靠缩小留白与字号来维持「一排 5 个」，尺寸分档下调 */
+@media (max-width: 1024px) {
+  .home-tile-grid--row5,
+  .home-dungeon-nav {
+    gap: 10px;
+  }
+
+  .home-tile {
+    padding: 12px 11px 10px;
+  }
+
+  .home-tile-title {
+    font-size: 14px;
+  }
+
+  .home-tile-desc {
+    font-size: 11.5px;
+  }
+}
+
+@media (max-width: 860px) {
+  .home-tile-grid--row5,
+  .home-dungeon-nav {
+    gap: 9px;
+  }
+
+  .home-tile {
+    gap: 5px;
+    padding: 11px 10px 9px;
+  }
+
+  .home-tile-title {
+    font-size: 13px;
+  }
+
+  .home-tile-desc {
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 560px) {
+  .home-tile-grid--row5,
+  .home-dungeon-nav {
+    gap: 7px;
+  }
+
+  .home-tile {
+    gap: 4px;
+    padding: 9px 8px 8px;
+    border-radius: 6px;
+  }
+
+  .home-tile-tag {
+    padding: 1px 5px;
+    font-size: 10px;
+  }
+
+  .home-tile-title {
+    font-size: 12px;
+  }
+
+  .home-tile-desc {
+    /* 小屏上说明文字限两行，免得同一排的方块高低不齐 */
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    font-size: 10.5px;
+  }
+}
+
+/* 攻略长文排版 */
+.guide-prose {
+  font-size: 15px;
+  line-height: 1.72;
+}
+
+.guide-prose h2 {
+  margin: 1.6em 0 0.65em;
+  padding-bottom: 0.35em;
+  font-size: 1.2rem;
+  border-bottom: 1px solid var(--border);
+  scroll-margin-top: calc(var(--header-h) + 10px);
+}
+
+.guide-prose h2[id],
+.guide-prose h3[id] {
+  scroll-margin-top: calc(var(--header-h) + 10px);
+}
+
+.guide-prose h3 {
+  margin: 1em 0 0.35em;
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.guide-prose h3:has(.guide-tier) {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px;
+  margin: 1.1em 0 0.35em;
+  padding: 8px 10px;
+  background: var(--bg-elevated);
+  border-radius: 6px;
+  border-left: 3px solid var(--border);
+}
+
+.guide-tier {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.35em;
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+.guide-tier--s {
+  background: #fff8e1;
+  color: #f57f17;
+}
+
+.guide-tier--a {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.guide-tier--b {
+  background: #e3f2fd;
+  color: #1565c0;
+}
+
+.guide-tier--c {
+  background: #f3e5f5;
+  color: #6a1b9a;
+}
+
+/* js/guide-prose.js 会把未定品阶输出成 guide-tier--?，所以 `?` 必须转义，
+   否则整条规则（含下面的 --other）都会被浏览器当作非法选择器丢掉。 */
+.guide-tier--\?,
+.guide-tier--other {
+  background: #eceff1;
+  color: #546e7a;
+}
+
+.guide-entry-name {
+  font-weight: 700;
+}
+
+.guide-entry-colon {
+  margin-right: -4px;
+}
+
+.guide-entry-rest {
+  font-weight: 400;
+  color: var(--text);
+  flex: 1 1 12em;
+}
+
+.guide-callout {
+  margin: 0.85em 0;
+  padding: 12px 14px 12px 16px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--bg-elevated);
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+.guide-callout--note {
+  border-left: 4px solid var(--accent);
+  background: rgba(0, 161, 214, 0.06);
+}
+
+.guide-callout--tip {
+  border-left: 4px solid var(--tag-compendium);
+  background: rgba(124, 108, 240, 0.06);
+}
+
+.guide-callout--warn {
+  border-left: 4px solid #e65100;
+  background: rgba(230, 81, 0, 0.06);
+}
+
+.guide-callout--version {
+  border-left: 4px solid var(--tag-res);
+  background: rgba(107, 207, 127, 0.08);
+  font-weight: 500;
+}
+
+.card-grid.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+@media (max-width: 800px) {
+  .card-grid.two-col {
+    grid-template-columns: 1fr;
+  }
+}
+
+.wiki-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px 20px;
+  margin-bottom: 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.wiki-card h2 {
+  margin: 0 0 12px;
+  font-size: 1.1rem;
+  border-left: 3px solid var(--accent);
+  padding-left: 10px;
+}
+
+.link-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.link-table td {
+  padding: 8px 4px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
+
+.link-table tr:last-child td {
+  border-bottom: none;
+}
+
+/* 首页攻略 / 图鉴卡片：最多展示 5 条，其余在「查看全部」页 */
+.link-table--home-preview tbody tr:nth-child(n + 6) {
+  display: none;
+}
+
+.tag {
+  display: inline-block;
+  font-size: 12px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  color: #fff;
+  white-space: nowrap;
+}
+
+.tag-guide {
+  background: var(--tag-guide);
+}
+
+.tag-res {
+  background: var(--tag-res);
+}
+
+.tag-dungeon {
+  background: var(--tag-dungeon);
+}
+
+.tag-compendium {
+  background: var(--tag-compendium);
+}
+
+.card-more {
+  display: inline-block;
+  margin-top: 10px;
+  font-size: 14px;
+}
+
+.update-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.update-list li {
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.update-list li:last-child {
+  border-bottom: none;
+}
+
+.update-list time {
+  margin-left: auto;
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.update-badge {
+  font-size: 12px;
+  padding: 2px 6px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  border-radius: 4px;
+}
+
+.muted {
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+.map-placeholder {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.map-placeholder span {
+  background: #fafbfc;
+  border: 1px dashed var(--border);
+  border-radius: 6px;
+  padding: 24px 8px;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.char-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.char-chips a {
+  padding: 6px 14px;
+  background: #fafbfc;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  color: var(--text);
+  font-size: 14px;
+}
+
+.char-chips a:hover {
+  border-color: var(--accent);
+  text-decoration: none;
+}
+
+.wiki-footer {
+  padding: 16px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--text-muted);
+  border-top: 1px solid var(--border);
+}
+
+.wiki-footer-legal {
+  display: block;
+  margin-top: 8px;
+  font-size: 12px;
+  line-height: 1.5;
+  max-width: 40em;
+  margin-left: auto;
+  margin-right: auto;
+  opacity: 0.92;
+}
+
+/* 文章页 */
+.article-header {
+  margin-bottom: 20px;
+}
+
+.article-header h1 {
+  margin: 0 0 8px;
+}
+
+.breadcrumb {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+}
+
+.breadcrumb a {
+  color: var(--text-muted);
+}
+
+.article-body {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px 28px;
+}
+
+.article-body h2 {
+  margin: 1.5em 0 0.6em;
+  font-size: 1.15rem;
+  color: var(--accent);
+}
+
+.article-body h2:first-child {
+  margin-top: 0;
+}
+
+.article-body h3 {
+  margin: 1.2em 0 0.5em;
+  font-size: 1rem;
+}
+
+.article-body ul,
+.article-body ol {
+  padding-left: 1.4em;
+}
+
+.article-body table.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 12px 0;
+  font-size: 14px;
+}
+
+.article-body table.data-table th,
+.article-body table.data-table td {
+  border: 1px solid var(--border);
+  padding: 8px 10px;
+  text-align: left;
+}
+
+.article-body table.data-table th {
+  background: #f5f6f8;
+}
+
+.toc {
+  background: #fafbfc;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px 16px;
+  margin-bottom: 20px;
+  font-size: 14px;
+}
+
+.toc ul {
+  margin: 8px 0 0;
+  padding-left: 1.2em;
+}
+
+.guide-read-progress {
+  position: fixed;
+  top: var(--header-h);
+  left: 0;
+  right: 0;
+  height: 3px;
+  z-index: 99;
+  pointer-events: none;
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.guide-read-progress span {
+  display: block;
+  height: 100%;
+  width: 0;
+  background: linear-gradient(90deg, var(--accent), #7c6cf0);
+  transition: width 0.1s linear;
+}
+
+.wiki-main.has-guide-toc-rail {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.guide-layout-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.guide-toc-rail {
+  display: none;
+}
+
+@media (min-width: 1080px) {
+  .guide-toc-rail {
+    display: block;
+    flex: 0 0 196px;
+    position: sticky;
+    top: calc(var(--header-h) + 12px);
+    max-height: calc(100vh - var(--header-h) - 20px);
+    overflow-y: auto;
+    padding: 12px 14px;
+    font-size: 13px;
+    background: #fafbfc;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+  }
+
+  .guide-layout-body > nav.toc {
+    display: none;
+  }
+}
+
+.guide-toc-rail-title {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+}
+
+.guide-toc-rail-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.guide-toc-rail-list a {
+  display: block;
+  padding: 6px 8px;
+  margin: 2px 0;
+  border-radius: 6px;
+  color: var(--text);
+  text-decoration: none;
+  line-height: 1.4;
+  border-left: 2px solid transparent;
+}
+
+.guide-toc-rail-list a:hover {
+  background: var(--bg-elevated);
+  text-decoration: none;
+}
+
+.guide-toc-rail-list a.is-active {
+  background: var(--accent-soft);
+  border-left-color: var(--accent);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.guide-prose .guide-entry-name a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: rgba(0, 161, 214, 0.45);
+}
+
+.guide-prose .guide-entry-name a:hover {
+  color: var(--accent);
+}
+
+.search-hit {
+  outline: 2px solid var(--accent);
+}
+
+.weapon-entry {
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.weapon-entry:last-child {
+  border-bottom: none;
+}
+
+.weapon-entry h3 {
+  margin: 0 0 6px;
+  font-size: 1rem;
+  color: var(--text);
+}
+
+.weapon-entry p {
+  margin: 0 0 6px;
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+.weapon-entry p:first-of-type {
+  color: var(--text);
+}
+
+/* —— 技能一图全解 —— */
+.skills-guide-page .skill-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.legend-item {
+  font-size: 12px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: #fafbfc;
+}
+
+.legend-role { border-color: #e57373; color: #c62828; background: #ffebee; }
+.legend-partner { border-color: #64b5f6; color: #1565c0; background: #e3f2fd; }
+.legend-team { border-color: #b39ddb; color: #6a1b9a; background: #f3e5f5; }
+.legend-debuff { border-color: #81c784; color: #2e7d32; background: #e8f5e9; }
+.legend-general { border-color: #ffb74d; color: #e65100; background: #fff3e0; }
+
+.skill-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+  padding: 12px 14px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.skill-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  flex: 1;
+  min-width: 200px;
+}
+
+.skill-filter-btn {
+  font-size: 13px;
+  padding: 6px 12px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: #fff;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.skill-filter-btn.active {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.skill-page-search {
+  flex: 1;
+  min-width: 160px;
+  max-width: 280px;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  font-size: 14px;
+}
+
+.skill-count {
+  font-size: 13px;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.skill-card-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
+  align-items: start;
+}
+
+.skill-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  border-left-width: 4px;
+}
+
+.skill-cat-role { border-left-color: #e53935; }
+.skill-cat-partner { border-left-color: #1e88e5; }
+.skill-cat-team { border-left-color: #8e24aa; }
+.skill-cat-debuff { border-left-color: #43a047; }
+.skill-cat-general { border-left-color: #fb8c00; }
+
+.skill-cat-general .skill-cat-tag {
+  background: #fff3e0;
+  color: #e65100;
+}
+
+.xuanwu-integrated-guide .guide-char-entry {
+  margin: 0.2em 0;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.xuanwu-integrated-guide h3 {
+  margin: 0.85em 0 0.25em;
+  font-size: 0.95rem;
+}
+
+.full-guide-prose h4 {
+  margin: 1.1em 0 0.45em;
+  font-size: 0.95rem;
+  color: var(--text);
+}
+
+.compendium-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 12px;
+  font-size: 14px;
+}
+
+.compendium-toolbar input[type="search"] {
+  flex: 1;
+  max-width: 280px;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.char-compendium-table .char-avatar-cell {
+  width: 72px;
+  text-align: center;
+}
+
+.char-compendium-avatar {
+  width: 56px;
+  height: 56px;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto;
+  border-radius: 6px;
+  background: var(--bg-elevated);
+}
+
+.char-personality-name {
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.char-personality-desc {
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.45;
+}
+
+.char-compendium-list {
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 8px;
+  align-items: start;
+}
+
+.char-card-head {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.char-card-avatar-wrap {
+  flex-shrink: 0;
+}
+
+.char-compendium-card .char-compendium-avatar {
+  width: 40px;
+  height: 40px;
+}
+
+.char-avatar-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  border: 1px dashed var(--border);
+  border-radius: 8px;
+  background: var(--bg-elevated);
+}
+
+.char-card-title {
+  flex: 1;
+  min-width: 0;
+}
+
+.char-title-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.char-card-name {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.25;
+}
+
+.char-game-name {
+  margin: 2px 0 0;
+  font-size: 11px;
+  line-height: 1.3;
+}
+
+.char-title-row .char-growth-inline {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-muted);
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.char-martial-tag {
+  display: inline-block;
+  margin-top: 0;
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: var(--bg-elevated);
+}
+
+.char-martial-fist {
+  background: #fff3e0;
+  color: #e65100;
+}
+
+.char-martial-sword {
+  background: #e3f2fd;
+  color: #0d47a1;
+}
+
+.char-martial-blade {
+  background: #e8f5e9;
+  color: #1b5e20;
+}
+
+.char-martial-any {
+  background: #f3e5f5;
+  color: #6a1b9a;
+}
+
+.char-compact-line {
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.38;
+  color: var(--text-muted);
+}
+
+.char-compact-line .char-personality-name {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.char-label {
+  font-weight: 600;
+  color: var(--text);
+  margin-right: 2px;
+}
+
+.char-talent-line {
+  color: var(--text);
+}
+
+.char-obtain-line {
+  font-size: 10px;
+  line-height: 1.35;
+  opacity: 0.92;
+}
+
+.wiki-query-highlight {
+  outline: 2px solid var(--accent, #c9a227);
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+
+.compendium-sticky-toolbar {
+  position: sticky;
+  top: calc(var(--header-h) - 1px);
+  z-index: 40;
+  background: var(--bg-card);
+  padding: 10px 12px;
+  margin: 0 0 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+}
+
+.wiki-main > .compendium-sticky-toolbar {
+  background: var(--bg);
+  border: none;
+  border-bottom: 1px solid var(--border);
+  border-radius: 0;
+  margin-left: -16px;
+  margin-right: -16px;
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
+.martial-toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.martial-toolbar.compendium-sticky-toolbar {
+  margin-bottom: 12px;
+}
+
+.compendium-toolbar-root {
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+.compendium-toolbar-root.is-collapsed {
+  padding-bottom: 6px;
+}
+
+.compendium-toolbar-compact {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+  min-height: 32px;
+}
+
+.compendium-toolbar-root.is-collapsed .compendium-toolbar-compact {
+  margin-bottom: 0;
+}
+
+.compendium-toolbar-hint {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.compendium-toolbar-summary {
+  flex: 1;
+  min-width: 0;
+  font-size: 13px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.compendium-toolbar-toggle {
+  flex-shrink: 0;
+  padding: 5px 12px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--bg-elevated);
+  font-size: 12px;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.compendium-toolbar-toggle:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.compendium-toolbar-panel {
+  display: block;
+}
+
+.compendium-toolbar-root.is-collapsed .compendium-toolbar-panel {
+  display: none;
+}
+
+.martial-toolbar-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+}
+
+.martial-toolbar-search {
+  gap: 10px;
+  padding-top: 4px;
+}
+
+.martial-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.martial-filter-btn {
+  padding: 6px 14px;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background: var(--bg-elevated);
+  font-size: 13px;
+  cursor: pointer;
+  color: var(--text);
+  box-sizing: border-box;
+}
+
+.martial-filter-btn-lead {
+  min-width: 3.25rem;
+  text-align: center;
+}
+
+.martial-filter-btn.active {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.martial-search-wrap {
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+.martial-toolbar input[type="search"] {
+  flex: 1;
+  min-width: 160px;
+  max-width: 280px;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.martial-toolbar-search .martial-count {
+  margin-left: auto;
+}
+
+.martial-count {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.martial-card-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 14px;
+  align-items: start;
+}
+
+@keyframes martial-card-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes martial-effect-in {
+  from {
+    opacity: 0;
+    transform: translateX(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.martial-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px 18px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  display: grid;
+  grid-template-rows: minmax(4.75rem, auto) minmax(7.25rem, auto) minmax(5.25rem, auto) auto;
+  gap: 0;
+}
+
+.martial-animate-in {
+  animation: martial-card-in 0.45s ease both;
+}
+
+.martial-skill-card,
+.internal-neigong-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px 16px;
+}
+
+/* 覆盖 .martial-card 的 grid 固定行高，否则会留出大块空白 */
+.martial-card.char-compendium-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding: 8px 10px;
+  grid-template-rows: none;
+}
+
+.martial-card.char-compendium-card .char-card-head {
+  margin-bottom: 0;
+  gap: 8px;
+  align-items: center;
+}
+
+.martial-card.char-compendium-card .char-card-name {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.2;
+}
+
+.char-card-details {
+  margin-top: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.martial-skill-card .martial-card-head {
+  margin-bottom: 0;
+}
+
+.martial-skill-card .martial-item {
+  margin: 2px 0 0;
+}
+
+.martial-skill-card .martial-stats {
+  margin: 0;
+  align-self: stretch;
+  width: 100%;
+}
+
+.martial-skill-card .martial-skill-summary {
+  margin: 0;
+  padding-top: 0;
+  border-top: none;
+  align-self: stretch;
+  width: 100%;
+}
+
+.martial-skill-card .martial-manual-desp {
+  margin: 0;
+  align-self: stretch;
+  width: 100%;
+}
+
+.martial-skill-card .martial-effects-wrap {
+  margin: 0;
+  align-self: stretch;
+  width: 100%;
+}
+
+.internal-neigong-card .martial-card-head {
+  margin-bottom: 0;
+}
+
+.internal-neigong-card .martial-item {
+  margin: 2px 0 0;
+}
+
+.internal-pre-line {
+  margin: 6px 0 0;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.internal-pre-label {
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.internal-neigong-card .internal-special-note {
+  margin: 0 0 10px;
+  padding: 8px 10px;
+  font-size: 13px;
+  line-height: 1.5;
+  border-left: 3px solid #c62828;
+  background: rgba(198, 40, 40, 0.06);
+  border-radius: 0 var(--radius) var(--radius) 0;
+}
+
+.internal-neigong-card .internal-special-note strong {
+  color: #c62828;
+  font-weight: 600;
+  margin-right: 4px;
+}
+
+.internal-neigong-card .internal-neigong-summary {
+  margin: 0;
+  padding-top: 8px;
+  align-self: stretch;
+  width: 100%;
+}
+
+.internal-neigong-card .internal-manual-desp {
+  margin: 0;
+  padding: 8px 10px;
+  align-self: stretch;
+  width: 100%;
+}
+
+.internal-neigong-card .martial-effects-wrap {
+  margin: 0;
+  align-self: stretch;
+  width: 100%;
+}
+
+.internal-neigong-card .internal-goodskills-wrap {
+  margin: 0;
+  align-self: stretch;
+  width: 100%;
+}
+
+.internal-manual-desp {
+  margin: 0 0 12px;
+  padding: 10px 12px;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--text-muted);
+  background: var(--bg-elevated);
+  border-radius: 8px;
+  border-left: 3px solid var(--border);
+}
+
+.internal-goodskills-wrap {
+  margin-top: 12px;
+}
+
+.internal-goodskill-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.internal-goodskill-list li {
+  font-size: 12px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  line-height: 1.35;
+}
+
+.internal-goodskill-name {
+  font-weight: 600;
+}
+
+.internal-goodskill-bonus {
+  color: var(--text-muted);
+}
+
+.martial-card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.martial-title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.martial-name {
+  margin: 0 0 4px;
+  font-size: 1.1rem;
+}
+
+.martial-star {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: #eceff1;
+  color: #37474f;
+  line-height: 1.2;
+}
+
+.martial-star-0 { background: #eceff1; color: #546e7a; }
+.martial-star-1 { background: #efebe9; color: #5d4037; }
+.martial-star-2 { background: #f3e5f5; color: #6a1b9a; }
+.martial-star-3 { background: #e8eaf6; color: #3949ab; }
+.martial-star-4 { background: #e3f2fd; color: #1565c0; }
+.martial-star-5 { background: #e8f5e9; color: #2e7d32; }
+.martial-star-6 { background: #fff8e1; color: #f57f17; }
+
+.martial-base-effect {
+  padding: 8px 10px;
+  margin-bottom: 10px;
+  border-radius: 6px;
+  background: var(--bg-elevated);
+  border: 1px dashed var(--border);
+}
+
+.martial-unlock-base {
+  background: #546e7a;
+}
+
+.martial-traits-title {
+  margin: 0 0 8px;
+  font-size: 12px;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.martial-item {
+  margin: 0;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.martial-type-tag {
+  font-size: 12px;
+  padding: 3px 10px;
+  border-radius: 4px;
+  background: var(--bg-elevated);
+  white-space: nowrap;
+}
+
+.martial-type-1 .martial-type-tag {
+  background: #ffebee;
+  color: #b71c1c;
+}
+
+.martial-type-2 .martial-type-tag {
+  background: #e3f2fd;
+  color: #0d47a1;
+}
+
+.martial-type-3 .martial-type-tag {
+  background: #e8f5e9;
+  color: #1b5e20;
+}
+
+.martial-stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px 12px;
+  margin: 0 0 10px;
+  font-size: 13px;
+  align-self: start;
+}
+
+.martial-stats div {
+  display: flex;
+  gap: 6px;
+}
+
+.martial-stats dt {
+  margin: 0;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.martial-stats dd {
+  margin: 0;
+  font-weight: 500;
+}
+
+.martial-summary {
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin: 0 0 12px;
+  border-top: 1px dashed var(--border);
+  padding-top: 10px;
+  align-self: start;
+}
+
+.martial-effects-wrap {
+  align-self: start;
+  min-width: 0;
+}
+
+.martial-effects-title {
+  margin: 0 0 8px;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+}
+
+.equip-card {
+  position: relative;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.equip-card-multi {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 14px;
+}
+
+.equip-variant-switch {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 6px;
+  align-self: stretch;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  padding: 2px 0 4px;
+  z-index: 2;
+}
+
+.equip-variant-btn {
+  flex-shrink: 0;
+  white-space: nowrap;
+  padding: 3px 10px;
+  font-size: 11px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--bg-elevated);
+  color: var(--text-muted);
+  cursor: pointer;
+  line-height: 1.3;
+  opacity: 0.88;
+}
+
+.equip-variant-btn.active {
+  opacity: 1;
+  font-weight: 600;
+  background: var(--bg-card);
+  box-shadow: 0 0 0 1px currentColor;
+}
+
+.equip-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+}
+
+.equip-title-row .martial-name {
+  margin: 0;
+  flex: 1;
+  min-width: 0;
+}
+
+.equip-title-badges {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  gap: 6px;
+}
+
+.equip-star {
+  display: inline-flex;
+  align-items: center;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 4px;
+  line-height: 1.2;
+  background: var(--bg-elevated);
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+}
+
+.equip-card-top {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  margin-bottom: 10px;
+}
+
+.equip-icon {
+  width: 56px;
+  height: 56px;
+  object-fit: contain;
+  flex-shrink: 0;
+  background: var(--bg-elevated);
+  border-radius: 8px;
+  padding: 4px;
+  border: 1px solid var(--border);
+  box-sizing: border-box;
+}
+
+.equip-title-block {
+  flex: 1;
+  min-width: 0;
+}
+
+.equip-meta {
+  margin: 6px 0 0;
+  font-size: 13px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.equip-type-tag {
+  font-size: 11px;
+}
+
+.equip-money {
+  color: var(--text-muted);
+}
+
+.equip-quality-badge {
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  font-weight: 600;
+}
+
+.equip-attr-dl {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px 12px;
+  margin: 0 0 12px;
+  font-size: 13px;
+}
+
+.equip-attr-dl dt {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.equip-attr-dl dd {
+  margin: 4px 0 0;
+  font-weight: 500;
+}
+
+.equip-enhance-wrap {
+  margin-bottom: 4px;
+}
+
+.equip-enhance-wrap .martial-effects-title {
+  margin-bottom: 6px;
+}
+
+.equip-enhance-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+}
+
+.equip-enhance-chip {
+  display: inline-block;
+  max-width: 100%;
+  padding: 4px 10px;
+  font-size: 12px;
+  line-height: 1.35;
+  font-weight: 500;
+  color: var(--text);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  word-break: break-word;
+}
+
+.equip-no-enhance {
+  margin: 0;
+  font-size: 13px;
+}
+
+.equip-flavor {
+  margin-top: 10px;
+  margin-bottom: 0;
+}
+
+.martial-effect-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.martial-effect-item {
+  padding: 8px 10px;
+  margin-bottom: 6px;
+  border-radius: 6px;
+  background: var(--bg-elevated);
+  animation: martial-effect-in 0.4s ease both;
+  transition: background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.martial-effect-item:hover {
+  background: var(--accent-soft);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.martial-effect-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.martial-effect-name {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.martial-unlock {
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  background: var(--accent);
+  color: #fff;
+  white-space: nowrap;
+}
+
+.martial-effect-desc {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--text-muted);
+}
+
+.table-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin: 12px 0;
+}
+
+.guide-related {
+  margin-bottom: 16px;
+  padding: 14px 18px;
+  font-size: 14px;
+}
+
+.guide-related a {
+  margin-right: 6px;
+}
+
+.article-toolbar {
+  margin-bottom: 16px;
+}
+
+.article-toolbar input {
+  width: 100%;
+  max-width: 360px;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  font-size: 14px;
+}
+
+.search-hidden {
+  display: none !important;
+}
+
+.back-to-top {
+  position: fixed;
+  right: 16px;
+  bottom: 24px;
+  z-index: 200;
+  padding: 10px 14px;
+  border-radius: 24px;
+  border: 1px solid var(--border);
+  background: #fff;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12);
+  font-size: 13px;
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+}
+
+.back-to-top.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+@supports (padding: env(safe-area-inset-bottom)) {
+  .back-to-top {
+    bottom: calc(16px + env(safe-area-inset-bottom));
+  }
+
+  .wiki-main {
+    padding-bottom: calc(40px + env(safe-area-inset-bottom));
+  }
+}
+
+.map-city-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(88px, 1fr));
+  gap: 8px;
+}
+
+.map-city-grid a {
+  display: block;
+  padding: 10px 6px;
+  text-align: center;
+  font-size: 13px;
+  background: #fafbfc;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.map-city-grid a:hover {
+  border-color: var(--accent);
+}
+
+.map-city-grid span {
+  display: block;
+  padding: 10px 6px;
+  text-align: center;
+  font-size: 13px;
+  background: #fafbfc;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text-muted);
+}
+
+.map-place-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-height: 52px;
+  padding: 10px 6px;
+  font-size: 13px;
+  font-family: inherit;
+  cursor: pointer;
+  background: #fafbfc;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+}
+
+.map-place-btn:hover,
+.map-place-btn.is-active {
+  border-color: var(--accent);
+  background: #fff;
+}
+
+.map-place-count {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.map-quest-panel {
+  margin-top: 12px;
+}
+
+.map-quest-content {
+  max-height: min(70vh, 720px);
+  overflow: auto;
+  padding-right: 4px;
+}
+
+.map-quest-block {
+  margin-bottom: 1.25rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.map-quest-block:last-of-type {
+  border-bottom: none;
+}
+
+.map-quest-block h3 {
+  font-size: 1.05rem;
+  margin: 0 0 0.65rem;
+}
+
+.map-quest-body p {
+  margin: 0.45rem 0;
+  line-height: 1.55;
+  font-size: 14px;
+}
+
+.map-quest-side {
+  padding-left: 0.65rem;
+  border-left: 3px solid var(--accent);
+}
+
+.map-quest-sub {
+  color: var(--text-muted);
+}
+
+.map-quest-source {
+  margin-top: 1rem;
+  font-size: 12px;
+}
+
+.map-dungeon-block {
+  margin-bottom: 1.25rem;
+}
+
+.map-dungeon-block h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1.05rem;
+}
+
+.map-dungeon-note {
+  margin: 0 0 0.75rem;
+  font-size: 13px;
+}
+
+.map-dungeon-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.map-dungeon-floor {
+  padding: 12px 14px;
+  background: #fafbfc;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+.map-dungeon-floor-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px 12px;
+  margin-bottom: 10px;
+}
+
+.map-dungeon-floor-num {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent);
+  white-space: nowrap;
+}
+
+.map-dungeon-floor-boss {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.map-dungeon-floor-meta {
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px 16px;
+}
+
+.map-dungeon-meta-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.map-dungeon-meta-item dt {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  letter-spacing: 0.02em;
+}
+
+.map-dungeon-meta-item dd {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.45;
+  word-break: break-word;
+}
+
+.map-dungeon-meta-skill,
+.map-dungeon-meta-drop {
+  grid-column: 1 / -1;
+}
+
+@media (min-width: 520px) {
+  .map-dungeon-floor-meta {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .map-dungeon-meta-skill {
+    grid-column: span 2;
+  }
+
+  .map-dungeon-meta-drop {
+    grid-column: span 2;
+  }
+}
+
+.map-dungeon-section {
+  margin-bottom: 1.25rem;
+}
+
+.map-dungeon-section-title {
+  margin: 0 0 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  border-left: 3px solid var(--accent);
+  padding-left: 8px;
+}
+
+.map-dungeon-fighter {
+  margin-bottom: 8px;
+}
+
+.map-dungeon-fighter-name {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+
+.map-dungeon-fighter-meta {
+  margin-bottom: 0;
+}
+
+.map-dungeon-run-meta {
+  margin-top: 8px;
+}
+
+.map-dungeon-meta-weaken dd {
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.map-dungeon-drop-meta {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed var(--border);
+}
+
+.map-dungeon-drop-meta dd {
+  color: #c62828;
+  font-weight: 500;
+}
+
+.map-dungeon-footnotes {
+  margin: 0 0 12px;
+  padding-left: 1.2rem;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.map-island-flow-block {
+  margin-bottom: 1.5rem;
+}
+
+.map-island-flow-section {
+  margin-bottom: 1rem;
+}
+
+.map-island-step {
+  margin: 0 0 8px;
+  font-size: 14px;
+  line-height: 1.55;
+  padding-left: 0.25rem;
+  border-left: 2px solid var(--border);
+  padding-left: 10px;
+}
+
+.map-dungeon-boss-tag {
+  margin: 4px 0 0;
+  font-size: 12px;
+}
+
+.wiki-easter-egg-bite {
+  position: fixed;
+  z-index: 35;
+  left: 6px;
+  bottom: 6px;
+  margin: 0;
+  padding: 4px 7px;
+  font-size: 11px;
+  line-height: 1.2;
+  font-family: inherit;
+  color: var(--text-muted);
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  opacity: 0.22;
+  transition: opacity 0.2s ease, color 0.2s ease;
+}
+
+.wiki-easter-egg-bite:hover,
+.wiki-easter-egg-bite:focus-visible,
+.wiki-easter-egg-bite.is-open {
+  opacity: 0.92;
+  color: var(--text);
+  outline: none;
+}
+
+.wiki-easter-egg-bite-reveal {
+  position: fixed;
+  z-index: 36;
+  left: 8px;
+  bottom: 34px;
+  padding: 6px 12px;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--text);
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  animation: wiki-easter-egg-pop 0.35s ease;
+}
+
+.wiki-easter-egg-bite-reveal[hidden] {
+  display: none !important;
+}
+
+@keyframes wiki-easter-egg-pop {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@supports (padding: env(safe-area-inset-bottom)) {
+  .wiki-easter-egg-bite {
+    left: calc(6px + env(safe-area-inset-left));
+    bottom: calc(6px + env(safe-area-inset-bottom));
+  }
+
+  .wiki-easter-egg-bite-reveal {
+    left: calc(8px + env(safe-area-inset-left));
+    bottom: calc(34px + env(safe-area-inset-bottom));
+  }
+}
+
+.skill-card-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.skill-name {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.skill-cat-tag {
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: var(--bg-elevated);
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.skill-attr,
+.skill-obtain {
+  margin: 0 0 8px;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--text-muted);
+}
+
+.skill-obtain:last-child {
+  margin-bottom: 0;
+}
+
+.skill-attr strong,
+.skill-obtain strong {
+  color: var(--text);
+  font-weight: 600;
+}
+
+@media (max-width: 480px) {
+  .skill-card-list {
+    grid-template-columns: 1fr;
+  }
+
+  .skill-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .skill-page-search {
+    max-width: none;
+  }
+}
+
+/* 面板攻击计算器 */
+.panel-calc-page .wiki-main {
+  max-width: 1200px;
+}
+
+.panel-calc-hero {
+  margin-bottom: 20px;
+  padding: 22px 24px;
+  border-radius: var(--radius);
+  background: linear-gradient(135deg, rgba(0, 161, 214, 0.12) 0%, rgba(124, 108, 240, 0.08) 55%, rgba(240, 180, 41, 0.06) 100%);
+  border: 1px solid rgba(0, 161, 214, 0.2);
+}
+
+.panel-calc-kicker {
+  margin: 0 0 6px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.panel-calc-hero h1 {
+  margin: 0 0 8px;
+  font-size: 1.65rem;
+}
+
+.panel-calc-lead {
+  margin: 0;
+  max-width: 52em;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--text-muted);
+}
+
+.panel-calc-source {
+  margin: 10px 0 0 !important;
+  font-size: 12px;
+}
+
+.panel-calc-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 340px);
+  gap: 20px;
+  align-items: start;
+}
+
+.panel-calc-inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+
+.panel-calc-section h2 {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.panel-calc-section-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.panel-calc-section-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(145deg, var(--accent), #0088b8);
+  flex-shrink: 0;
+}
+
+.panel-calc-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px 14px;
+}
+
+.panel-calc-grid--wide {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.panel-calc-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 13px;
+}
+
+.panel-calc-field--span2 {
+  grid-column: span 2;
+}
+
+.panel-calc-field span {
+  color: var(--text-muted);
+  font-weight: 500;
+  font-size: 12px;
+}
+
+.panel-calc-field input,
+.panel-calc-field select {
+  width: 100%;
+  min-height: 44px;
+  padding: 9px 11px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 16px;
+  background: var(--bg);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.panel-calc-field input:hover,
+.panel-calc-field select:hover {
+  border-color: rgba(0, 161, 214, 0.35);
+}
+
+.panel-calc-field input:focus,
+.panel-calc-field select:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(0, 161, 214, 0.15);
+}
+
+.panel-calc-combo {
+  position: relative;
+}
+
+.panel-calc-combo-input {
+  width: 100%;
+}
+
+.panel-calc-combo-list {
+  position: absolute;
+  z-index: 40;
+  left: 0;
+  right: 0;
+  top: calc(100% + 4px);
+  margin: 0;
+  padding: 6px 0;
+  max-height: min(280px, 45vh);
+  overflow-y: auto;
+  list-style: none;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--card, #fff);
+  box-shadow: 0 10px 28px rgba(15, 23, 42, 0.12);
+  -webkit-overflow-scrolling: touch;
+}
+
+.panel-calc-combo-option {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 12px;
+  font-size: 14px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.panel-calc-combo-option:hover,
+.panel-calc-combo-option.is-active {
+  background: rgba(0, 161, 214, 0.1);
+}
+
+.panel-calc-combo-option-name {
+  font-weight: 600;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.panel-calc-combo-option-meta {
+  flex-shrink: 0;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.panel-calc-combo-empty {
+  padding: 10px 12px;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.panel-calc-label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.panel-calc-label-row > label:first-child {
+  color: var(--text-muted);
+  font-weight: 500;
+  font-size: 12px;
+}
+
+.panel-calc-manual-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-muted);
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.panel-calc-manual-toggle input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  flex-shrink: 0;
+  cursor: pointer;
+  accent-color: var(--accent);
+}
+
+.panel-calc-field-max-toggle {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.panel-calc-arts-rules-wrap {
+  padding-bottom: 8px;
+  margin-bottom: 4px;
+  border-bottom: 1px dashed var(--border);
+}
+
+.panel-calc-arts-rules-title {
+  margin: 0 0 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.panel-calc-arts-rules {
+  margin: 0;
+  padding-left: 1.15em;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+.panel-calc-arts-rules li {
+  margin-bottom: 6px;
+}
+
+.panel-calc-field-hint {
+  margin: 6px 0 0;
+  font-size: 11px;
+  line-height: 1.45;
+  color: var(--text-muted);
+}
+
+.panel-calc-forge-option.is-selected {
+  background: rgba(0, 161, 214, 0.14);
+}
+
+.panel-calc-forge-option.is-selected .panel-calc-combo-option-name {
+  font-weight: 600;
+  color: var(--accent, #00a1d6);
+}
+
+.panel-calc-forge-option .panel-calc-combo-option-name {
+  white-space: normal;
+}
+
+#paWeaponForgeInput.panel-calc-combo-input {
+  cursor: pointer;
+}
+
+.panel-calc-field input[type="number"]:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  background: rgba(0, 0, 0, 0.03);
+}
+
+.panel-calc-field input.panel-calc-input--bound,
+.panel-calc-field input[readonly] {
+  background: rgba(0, 161, 214, 0.06);
+  border-color: rgba(0, 161, 214, 0.22);
+  cursor: default;
+}
+
+.panel-calc-aside {
+  position: sticky;
+  top: calc(var(--header-h, 56px) + 16px);
+}
+
+.panel-calc-aside-inner {
+  padding: 18px 18px 16px;
+  border: 1px solid rgba(0, 161, 214, 0.22);
+  box-shadow: 0 8px 28px rgba(15, 23, 42, 0.06);
+}
+
+.panel-calc-result-breakdown {
+  margin-top: 14px;
+  padding: 14px 14px 18px;
+  min-height: 320px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.02);
+}
+
+.panel-calc-result-details-title {
+  margin: 0 0 12px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+  letter-spacing: 0.04em;
+}
+
+.panel-calc-aside-title {
+  margin: 0 0 14px;
+  font-size: 1rem;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+.panel-calc-stat-hero {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 0;
+}
+
+.panel-calc-stat-card {
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+}
+
+.panel-calc-stat-card--primary {
+  border-color: rgba(0, 161, 214, 0.35);
+  background: linear-gradient(180deg, rgba(0, 161, 214, 0.1), transparent);
+}
+
+.panel-calc-stat-card--accent {
+  border-color: rgba(124, 108, 240, 0.35);
+  background: linear-gradient(180deg, rgba(124, 108, 240, 0.08), transparent);
+}
+
+.panel-calc-stat-card--dmg {
+  border-color: rgba(242, 93, 142, 0.3);
+  background: linear-gradient(180deg, rgba(242, 93, 142, 0.07), transparent);
+}
+
+.panel-calc-stat-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+
+.panel-calc-stat-value {
+  display: block;
+  font-size: 1.65rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  color: var(--text);
+}
+
+.panel-calc-stat-card--primary .panel-calc-stat-value {
+  color: #0077a2;
+}
+
+.panel-calc-stat-hint {
+  display: block;
+  margin-top: 4px;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.panel-calc-result {
+  display: grid;
+  gap: 0;
+  margin: 0;
+}
+
+.panel-calc-result-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px 12px;
+  align-items: baseline;
+  padding: 11px 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.panel-calc-result-row:last-child {
+  border-bottom: none;
+}
+
+.panel-calc-result dt {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+.panel-calc-result dd {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.panel-calc-result-note {
+  display: block;
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.panel-calc-formula-list {
+  margin: 0;
+  padding-left: 1.2em;
+  font-size: 13px;
+  line-height: 1.65;
+  color: var(--text-muted);
+}
+
+.panel-calc-formula-list li {
+  margin-bottom: 6px;
+}
+
+.panel-calc-fold {
+  padding: 0;
+  overflow: hidden;
+}
+
+.panel-calc-fold-summary {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 14px;
+  cursor: pointer;
+  list-style: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.panel-calc-fold-summary::-webkit-details-marker {
+  display: none;
+}
+
+.panel-calc-fold-title {
+  flex: 1;
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.panel-calc-fold-summary::after {
+  content: "›";
+  font-size: 1.25rem;
+  line-height: 1;
+  color: var(--text-muted);
+  transform: rotate(90deg);
+  transition: transform 0.15s ease;
+}
+
+.panel-calc-fold[open] .panel-calc-fold-summary::after {
+  transform: rotate(-90deg);
+}
+
+.panel-calc-fold-body {
+  padding: 0 14px 14px;
+}
+
+@media (min-width: 961px) {
+  .panel-calc-fold-summary {
+    cursor: default;
+    pointer-events: none;
+  }
+
+  .panel-calc-fold-summary::after {
+    display: none;
+  }
+
+  .panel-calc-fold-body {
+    padding-top: 0;
+  }
+
+  .panel-calc-fold .panel-calc-fold-summary {
+    padding-bottom: 0;
+    margin-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+}
+
+@media (max-width: 960px) {
+  .panel-calc-page .wiki-main {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  .panel-calc-page .breadcrumb {
+    font-size: 12px;
+  }
+
+  .panel-calc-hero {
+    padding: 14px 14px;
+    margin-bottom: 12px;
+  }
+
+  .panel-calc-hero h1 {
+    font-size: 1.25rem;
+  }
+
+  .panel-calc-lead {
+    font-size: 12px;
+    line-height: 1.45;
+  }
+
+  /* 手机也保持左右双栏：左输入、右结果（与电脑一致） */
+  .panel-calc-layout {
+    grid-template-columns: minmax(0, 1fr) minmax(118px, 34vw);
+    gap: 8px;
+    align-items: start;
+  }
+
+  .panel-calc-inputs {
+    gap: 10px;
+  }
+
+  .panel-calc-section.wiki-card {
+    padding: 12px;
+  }
+
+  .panel-calc-section-head {
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+  }
+
+  .panel-calc-grid,
+  .panel-calc-grid--wide {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .panel-calc-field--span2 {
+    grid-column: span 1;
+  }
+
+  .panel-calc-field span {
+    font-size: 11px;
+  }
+
+  .panel-calc-aside {
+    position: sticky;
+    top: calc(var(--header-h, 56px) + 8px);
+    align-self: start;
+  }
+
+  .panel-calc-aside-inner {
+    padding: 10px 8px;
+    border-radius: 10px;
+    max-height: calc(100dvh - var(--header-h, 56px) - 20px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .panel-calc-aside-title {
+    font-size: 12px;
+    margin-bottom: 8px;
+    padding-bottom: 6px;
+    text-align: center;
+  }
+
+  .panel-calc-stat-hero {
+    gap: 6px;
+    margin-bottom: 0;
+  }
+
+  .panel-calc-result-breakdown {
+    margin-top: 8px;
+    padding: 10px 8px 14px;
+    min-height: 220px;
+  }
+
+  .panel-calc-result-details-title {
+    margin-bottom: 8px;
+    font-size: 10px;
+    text-align: center;
+  }
+
+  .panel-calc-stat-card {
+    padding: 8px 6px;
+    border-radius: 8px;
+  }
+
+  .panel-calc-stat-label {
+    font-size: 10px;
+    margin-bottom: 2px;
+    line-height: 1.2;
+  }
+
+  .panel-calc-stat-value {
+    font-size: 1.05rem;
+    word-break: break-all;
+  }
+
+  .panel-calc-stat-hint {
+    display: none;
+  }
+
+  .panel-calc-result-row {
+    grid-template-columns: 1fr;
+    gap: 2px;
+    padding: 6px 0;
+  }
+
+  .panel-calc-result dd {
+    text-align: left;
+    font-size: 12px;
+  }
+
+  .panel-calc-result-note {
+    font-size: 10px;
+  }
+
+  .panel-calc-fold--formulas {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .nav-toggle {
+    display: block;
+  }
+
+  .wiki-sidebar {
+    position: fixed;
+    top: var(--header-h);
+    left: 0;
+    bottom: 0;
+    z-index: 90;
+    transform: translateX(-100%);
+    transition: transform 0.2s ease;
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.12);
+  }
+
+  .wiki-sidebar.open {
+    transform: translateX(0);
+  }
+
+  .wiki-main {
+    padding: 16px;
+  }
+
+  .wiki-brand-text {
+    display: none;
+  }
+}
+
+/* ===== 玩家协作层：登录 / 在线编辑 / 审核 ===== */
+.wiki-collab-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 6px 20px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-elevated);
+  font-size: 13px;
+}
+
+.wiki-collab-info {
+  color: var(--text-muted);
+}
+
+.wiki-collab-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.wiki-collab-user {
+  color: var(--text-muted);
+}
+
+.wiki-collab-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg-card);
+  color: var(--text);
+  font: inherit;
+  font-size: 13px;
+  line-height: 1.4;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.wiki-collab-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.wiki-collab-btn--primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+.wiki-collab-btn--primary:hover {
+  color: #fff;
+  opacity: 0.9;
+}
+
+.wiki-collab-btn--ghost {
+  background: transparent;
+}
+
+.wiki-collab-btn[hidden] {
+  display: none;
+}
+
+.wiki-collab-btn:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.wiki-collab-badge {
+  margin: 0 0 12px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  background: var(--accent-soft);
+  color: var(--text-muted);
+  font-size: 12.5px;
+}
+
+.wiki-collab-note-meta {
+  margin: 8px 0 0;
+  font-size: 12.5px;
+}
+
+.wiki-collab-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 400;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(20, 22, 26, 0.45);
+}
+
+.wiki-collab-overlay[hidden] {
+  display: none;
+}
+
+.wiki-collab-dialog {
+  width: min(880px, 100%);
+  max-height: 90vh;
+  overflow: auto;
+  padding: 16px 18px 18px;
+  border-radius: var(--radius);
+  background: var(--bg-card);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+}
+
+.wiki-collab-dialog-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.wiki-collab-dialog-head h2 {
+  margin: 0;
+  font-size: 17px;
+}
+
+.wiki-collab-head-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 0 0 auto;
+}
+
+.wiki-collab-close {
+  border: 0;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.wiki-collab-tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 12px 0;
+}
+
+.wiki-collab-tool {
+  padding: 4px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg-card);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.wiki-collab-tool:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.wiki-collab-hint {
+  margin: 0 0 12px;
+  color: var(--text-muted);
+  font-size: 12.5px;
+}
+
+.wiki-collab-field {
+  margin-bottom: 14px;
+}
+
+.wiki-collab-field-label {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--text-muted);
+  font-size: 12.5px;
+}
+
+.wiki-collab-editor {
+  min-height: 160px;
+  max-height: 42vh;
+  overflow: auto;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg);
+}
+
+.wiki-collab-editor:focus {
+  outline: 2px solid var(--accent-soft);
+  border-color: var(--accent);
+}
+
+.wiki-collab-labelled {
+  display: block;
+  margin-bottom: 12px;
+  font-size: 13px;
+}
+
+.wiki-collab-labelled > span {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--text-muted);
+}
+
+.wiki-collab-labelled input,
+.wiki-collab-labelled textarea,
+.wiki-login-coderow input {
+  width: 100%;
+  padding: 7px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg);
+  color: var(--text);
+  font: inherit;
+  font-size: 14px;
+}
+
+.wiki-collab-labelled textarea {
+  resize: vertical;
+}
+
+.wiki-collab-msg {
+  min-height: 18px;
+  margin: 8px 0 0;
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.wiki-collab-msg.is-error,
+.wiki-login-msg.is-error,
+.wiki-review-msg.is-error {
+  color: #c0392b;
+}
+
+.wiki-collab-msg.is-ok,
+.wiki-login-msg.is-ok,
+.wiki-review-msg.is-ok {
+  color: #1f8a4c;
+}
+
+.wiki-collab-dialog-foot {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+/* ---- 修订历史与回退 ---- */
+/* 历史可能从「纠错」弹层里打开，要压在它上面 */
+#wikiHistoryOverlay {
+  z-index: 420;
+}
+
+.wiki-history-dialog {
+  width: min(980px, 100%);
+}
+
+.wiki-history-sub {
+  margin: 4px 0 12px;
+  font-size: 12.5px;
+  color: var(--text-muted);
+}
+
+.wiki-history-body {
+  display: grid;
+  grid-template-columns: 236px minmax(0, 1fr);
+  gap: 14px;
+  min-height: 300px;
+  max-height: 58vh;
+}
+
+.wiki-history-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  overflow: auto;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.wiki-history-item {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+}
+
+.wiki-history-item:last-child {
+  border-bottom: 0;
+}
+
+.wiki-history-item:hover {
+  background: var(--bg-elevated);
+}
+
+.wiki-history-item.is-active {
+  background: var(--accent-soft);
+}
+
+.wiki-history-item.is-current .wiki-history-ver {
+  color: #1f8a4c;
+}
+
+.wiki-history-ver {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.wiki-history-tag {
+  padding: 1px 6px;
+  border-radius: 999px;
+  background: rgba(31, 138, 76, 0.14);
+  color: #1f8a4c;
+  font-size: 11px;
+  font-weight: 400;
+}
+
+.wiki-history-tag--revert {
+  background: rgba(154, 114, 9, 0.16);
+  color: #9a7209;
+}
+
+.wiki-history-meta {
+  margin-top: 2px;
+  font-size: 11.5px;
+  color: var(--text-muted);
+}
+
+.wiki-history-empty {
+  padding: 14px 10px;
+  font-size: 12.5px;
+  color: var(--text-muted);
+}
+
+.wiki-history-panel {
+  overflow: auto;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.wiki-history-preview-head {
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+  font-size: 12.5px;
+  color: var(--text-muted);
+}
+
+.wiki-history-content > :first-child {
+  margin-top: 0;
+}
+
+.wiki-history-content .wiki-history-title {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.wiki-history-loading {
+  margin: 0;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.wiki-history-footinfo {
+  margin-right: auto;
+  align-self: center;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+@media (max-width: 760px) {
+  .wiki-history-body {
+    grid-template-columns: minmax(0, 1fr);
+    max-height: none;
+  }
+
+  .wiki-history-list {
+    max-height: 168px;
+  }
+
+  .wiki-history-panel {
+    max-height: 44vh;
+  }
+}
+
+.wiki-login-card {
+  margin-bottom: 16px;
+}
+
+.wiki-login-card h2 {
+  margin-top: 0;
+  font-size: 16px;
+}
+
+.wiki-login-wide {
+  width: 100%;
+}
+
+.wiki-login-coderow {
+  display: flex;
+  gap: 8px;
+}
+
+.wiki-login-coderow input {
+  flex: 1 1 auto;
+}
+
+.wiki-login-coderow .wiki-collab-btn {
+  flex: 0 0 auto;
+}
+
+.wiki-login-msg {
+  min-height: 18px;
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.wiki-collab-labelled input.is-error {
+  border-color: #c0392b;
+}
+
+.wiki-review-tabs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 4px 0 14px;
+}
+
+.wiki-review-tab {
+  padding: 6px 14px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--bg-card);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.wiki-review-tab.is-active {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: #fff;
+}
+
+.wiki-review-msg {
+  min-height: 18px;
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.wiki-review-card {
+  margin-bottom: 16px;
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-card);
+}
+
+.wiki-review-card h3 {
+  margin: 0 0 4px;
+  font-size: 16px;
+}
+
+.wiki-review-card header p {
+  margin: 0;
+}
+
+.wiki-review-note {
+  margin: 10px 0 0;
+  padding: 8px 10px;
+  border-radius: 6px;
+  background: var(--bg-elevated);
+  font-size: 13px;
+}
+
+.wiki-review-compare {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.wiki-review-block h4 {
+  margin: 0 0 6px;
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.wiki-review-preview {
+  max-height: 320px;
+  overflow: auto;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg);
+  font-size: 14px;
+}
+
+.wiki-review-block.is-new .wiki-review-preview {
+  border-color: var(--accent);
+}
+
+.wiki-review-region + .wiki-review-region {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed var(--border);
+}
+
+/* 改动明细 / 改动预览：新增为绿、删除为红，两侧共用 */
+.wiki-diff-add {
+  padding: 0 1px;
+  border-radius: 2px;
+  background: rgba(107, 207, 127, 0.22);
+  color: #1d7a3a;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.wiki-diff-del {
+  padding: 0 1px;
+  border-radius: 2px;
+  background: rgba(242, 93, 142, 0.16);
+  color: #b03052;
+  text-decoration: line-through;
+}
+
+.wiki-diff-add-tag,
+.wiki-diff-del-tag {
+  display: inline-block;
+  padding: 0 6px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.wiki-diff-add-tag {
+  color: #1d7a3a;
+  background: rgba(107, 207, 127, 0.2);
+}
+
+.wiki-diff-del-tag {
+  color: #b03052;
+  background: rgba(242, 93, 142, 0.16);
+}
+
+.wiki-review-stats {
+  margin-left: 8px;
+  white-space: nowrap;
+}
+
+.wiki-review-stats-note {
+  margin-left: 6px;
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.wiki-review-region-tag {
+  margin: 0 0 4px;
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.wiki-collab-diffwrap,
+.wiki-review-diffwrap {
+  margin-top: 8px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg-elevated);
+}
+
+.wiki-collab-diffwrap[hidden] {
+  display: none;
+}
+
+.wiki-collab-diffwrap > summary,
+.wiki-review-diffwrap > summary {
+  padding: 7px 10px;
+  color: var(--text-muted);
+  font-size: 12.5px;
+  cursor: pointer;
+}
+
+.wiki-collab-diff,
+.wiki-review-diff {
+  max-height: 300px;
+  overflow: auto;
+  padding: 10px 12px;
+  border-top: 1px solid var(--border);
+  background: var(--bg);
+  font-size: 14px;
+  line-height: 1.75;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.wiki-review-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+
+.wiki-review-state {
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+/* 「我的提交」：状态标签与驳回理由 */
+.wiki-mine-status {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 1px 8px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  vertical-align: 2px;
+  white-space: nowrap;
+}
+
+.wiki-mine-status.is-pending {
+  color: #8a5a00;
+  background: rgba(226, 168, 60, 0.2);
+}
+
+.wiki-mine-status.is-approved {
+  color: #1d7a3a;
+  background: rgba(107, 207, 127, 0.2);
+}
+
+.wiki-mine-status.is-rejected {
+  color: #b03052;
+  background: rgba(242, 93, 142, 0.16);
+}
+
+.wiki-mine-reason {
+  margin: 10px 0 0;
+  padding: 8px 10px;
+  border-left: 3px solid #f25d8e;
+  border-radius: 6px;
+  background: var(--bg-elevated);
+  font-size: 13px;
+}
+
+/* 图鉴条目纠错 */
+.wiki-entry-host {
+  position: relative;
+}
+
+.wiki-entry-btn {
+  margin-left: 8px;
+  padding: 2px 9px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text-muted);
+  font: inherit;
+  font-size: 11.5px;
+  line-height: 1.6;
+  white-space: nowrap;
+  vertical-align: 1px;
+  cursor: pointer;
+}
+
+.wiki-entry-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.wiki-entry-note {
+  margin: 10px 0 0;
+  padding: 8px 10px;
+  border-left: 3px solid var(--accent);
+  border-radius: 6px;
+  background: var(--bg-elevated);
+  font-size: 13px;
+}
+
+.wiki-entry-note strong {
+  display: block;
+  margin-bottom: 2px;
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.wiki-entry-note p {
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.wiki-entry-fields .wiki-entry-input {
+  width: 100%;
+  padding: 7px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg);
+  color: var(--text);
+  font: inherit;
+  font-size: 14px;
+}
+
+.wiki-entry-fields textarea.wiki-entry-input {
+  resize: vertical;
+  line-height: 1.6;
+}
+
+/* 图鉴条目类提交：卡片标签与字段级差异表 */
+.wiki-review-kind {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: var(--bg-elevated);
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 600;
+  vertical-align: 2px;
+}
+
+.wiki-entry-diff-table {
+  width: 100%;
+  margin-top: 12px;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.wiki-entry-diff-table th {
+  width: 92px;
+  padding: 9px 10px 9px 0;
+  border-top: 1px solid var(--border);
+  color: var(--text-muted);
+  font-size: 12.5px;
+  font-weight: 600;
+  text-align: left;
+  vertical-align: top;
+  white-space: nowrap;
+}
+
+.wiki-entry-diff-table td {
+  padding: 9px 0;
+  border-top: 1px solid var(--border);
+  vertical-align: top;
+}
+
+.wiki-entry-diff {
+  line-height: 1.75;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* ===== 玩家攻略投稿 ===== */
+
+/* 攻略大全里的「玩家攻略」列表 */
+.wiki-guide-cta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 14px 0 0;
+}
+
+.wiki-guide-list {
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.wiki-guide-item {
+  padding: 12px 0;
+  border-top: 1px solid var(--border);
+}
+
+.wiki-guide-item:first-child {
+  border-top: 0;
+  padding-top: 4px;
+}
+
+.wiki-guide-link {
+  font-size: 15.5px;
+  font-weight: 600;
+}
+
+.wiki-guide-summary {
+  margin: 4px 0 0;
+  color: var(--text-muted);
+  font-size: 13.5px;
+}
+
+.wiki-guide-meta {
+  margin: 6px 0 0;
+  color: var(--text-muted);
+  font-size: 12.5px;
+}
+
+/* 投稿页表单 */
+.wiki-submit-tips ul {
+  margin: 8px 0 0;
+  padding-left: 20px;
+}
+
+.wiki-submit-tips li {
+  margin: 4px 0;
+  font-size: 13.5px;
+}
+
+.wiki-submit-form {
+  margin-top: 16px;
+}
+
+.wiki-submit-form .wiki-collab-labelled {
+  display: block;
+  margin: 14px 0 0;
+}
+
+.wiki-submit-form .wiki-collab-labelled > span {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.wiki-submit-req {
+  color: #d0536f;
+  font-style: normal;
+  font-size: 12px;
+}
+
+.wiki-submit-opt {
+  color: var(--text-muted);
+  font-style: normal;
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.wiki-submit-form input[type="text"],
+.wiki-submit-form textarea,
+.wiki-submit-form select,
+.wiki-collab-labelled input[type="text"],
+.wiki-collab-labelled textarea {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg-card);
+  color: var(--text);
+  font: inherit;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.wiki-submit-form textarea {
+  resize: vertical;
+}
+
+.wiki-submit-form input[type="text"]:focus,
+.wiki-submit-form textarea:focus,
+.wiki-submit-form select:focus,
+.wiki-collab-labelled input[type="text"]:focus,
+.wiki-collab-labelled textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.wiki-submit-row {
+  display: grid;
+  grid-template-columns: minmax(140px, 190px) 1fr;
+  gap: 14px;
+}
+
+.wiki-submit-tools {
+  margin: 0 0 8px;
+}
+
+.wiki-collab-tool--accent {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.wiki-submit-count {
+  margin-left: auto;
+  color: var(--text-muted);
+  font-size: 12.5px;
+  align-self: center;
+}
+
+.wiki-submit-editor {
+  min-height: 380px;
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg-card);
+  font-size: 14.5px;
+  line-height: 1.85;
+  overflow: auto;
+}
+
+.wiki-submit-editor:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.wiki-submit-editor h2 {
+  margin: 18px 0 8px;
+  font-size: 17px;
+}
+
+.wiki-submit-editor h2:first-child {
+  margin-top: 0;
+}
+
+.wiki-submit-editor h3 {
+  margin: 14px 0 6px;
+  font-size: 15px;
+}
+
+.wiki-submit-editor p {
+  margin: 8px 0;
+}
+
+.wiki-submit-editor ul,
+.wiki-submit-editor ol {
+  margin: 8px 0;
+  padding-left: 22px;
+}
+
+.wiki-submit-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 16px;
+}
+
+.wiki-submit-foot {
+  margin: 10px 0 0;
+  font-size: 12.5px;
+}
+
+/* 攻略阅读页 */
+.wiki-article-head h1 {
+  margin: 0 0 8px;
+  font-size: 24px;
+  line-height: 1.35;
+}
+
+.wiki-article-meta {
+  margin: 0;
+  font-size: 13px;
+}
+
+.wiki-article-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 10px 0 0;
+}
+
+.wiki-article-tag {
+  padding: 1px 9px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.wiki-article-lead {
+  margin: 14px 0 0;
+  padding: 10px 12px;
+  border-left: 3px solid var(--accent);
+  border-radius: 6px;
+  background: var(--bg-elevated);
+  font-size: 14px;
+}
+
+.wiki-player-body {
+  margin-top: 16px;
+}
+
+.wiki-article-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 26px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+
+/* 审核台 / 我的提交里的攻略稿 */
+.wiki-guide-preview h2 {
+  margin: 0 0 8px;
+  font-size: 18px;
+}
+
+.wiki-guide-preview .article-body {
+  font-size: 13.5px;
+}
+
+.wiki-mine-kind {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 1px 8px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--text-muted);
+  font-size: 11.5px;
+  font-weight: 500;
+  vertical-align: 2px;
+  white-space: nowrap;
+}
+
+.wiki-mine-guide dl {
+  display: grid;
+  grid-template-columns: 88px 1fr;
+  gap: 4px 10px;
+  margin: 0 0 10px;
+  font-size: 13px;
+}
+
+.wiki-mine-guide dt {
+  color: var(--text-muted);
+}
+
+.wiki-mine-guide dd {
+  margin: 0;
+  word-break: break-word;
+}
+
+.wiki-mine-guide-body {
+  max-height: 420px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg-card);
+  overflow: auto;
+  font-size: 13.5px;
+}
+
+@media (max-width: 860px) {
+  .wiki-submit-row {
+    grid-template-columns: 1fr;
+  }
+
+  .wiki-mine-guide dl {
+    grid-template-columns: 72px 1fr;
+  }
+
+  .wiki-review-compare {
+    grid-template-columns: 1fr;
+  }
+
+  .wiki-collab-bar {
+    padding: 6px 12px;
+  }
+
+  .wiki-collab-overlay {
+    padding: 10px;
+  }
+
+  .wiki-collab-dialog {
+    max-height: 94vh;
+  }
+}
+
+/* ===== 攻略清单：筛选条 + 卡片列表（pages/guide-list.html） ===== */
+
+/* 标题行：标题与「全部 →」分居两侧（首页等处的入口也复用） */
+.wiki-lib-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.wiki-lib-head h2 {
+  margin: 0;
+}
+
+.wiki-lib-more {
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+/* 工具栏：搜索 + 排序 + 计数，下面两行是分类与标签筛选 */
+.wiki-lib-toolbar {
+  margin-top: 16px;
+}
+
+.wiki-lib-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.wiki-lib-search {
+  flex: 1 1 240px;
+  min-width: 0;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg-card);
+  color: var(--text);
+  font: inherit;
+  font-size: 14px;
+}
+
+.wiki-lib-sort {
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg-card);
+  color: var(--text);
+  font: inherit;
+  font-size: 14px;
+}
+
+.wiki-lib-search:focus,
+.wiki-lib-sort:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.wiki-lib-count {
+  margin-left: auto;
+  color: var(--text-muted);
+  font-size: 12.5px;
+  white-space: nowrap;
+}
+
+.wiki-lib-filter {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.wiki-lib-filter-label {
+  flex: 0 0 auto;
+  color: var(--text-muted);
+  font-size: 12.5px;
+}
+
+.wiki-lib-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+/* 选中态不用实心色块：深蓝底配白字在这种浅色主题下对比度偏低，
+   改用淡底色 + 主题色文字，长时间浏览更舒服。 */
+.wiki-lib-chip {
+  padding: 3px 10px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text-muted);
+  font: inherit;
+  font-size: 12.5px;
+  line-height: 1.6;
+  cursor: pointer;
+}
+
+.wiki-lib-chip:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.wiki-lib-chip.is-active {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.wiki-lib-body {
+  display: grid;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.wiki-lib-card {
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg-card);
+}
+
+.wiki-lib-card-head {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.wiki-lib-card-title {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.wiki-lib-cat {
+  padding: 1px 9px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--text-muted);
+  font-size: 11.5px;
+  white-space: nowrap;
+}
+
+.wiki-lib-summary {
+  margin: 6px 0 0;
+  color: var(--text-muted);
+  font-size: 13.5px;
+  line-height: 1.7;
+}
+
+.wiki-lib-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 8px 0 0;
+}
+
+.wiki-lib-tag {
+  padding: 1px 9px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text-muted);
+  font: inherit;
+  font-size: 11.5px;
+  cursor: pointer;
+}
+
+.wiki-lib-tag:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.wiki-lib-meta {
+  margin: 8px 0 0;
+  color: var(--text-muted);
+  font-size: 12.5px;
+}
+
+.wiki-lib-empty {
+  margin-top: 16px;
+  padding: 28px 16px;
+  border: 1px dashed var(--border);
+  border-radius: 10px;
+  text-align: center;
+}
+
+.wiki-lib-empty p {
+  margin: 4px 0;
+}
+
+/* 加载骨架：等一次网络往返期间先把版面占住，避免「空页」错觉 */
+.wiki-lib-skeleton {
+  pointer-events: none;
+}
+
+.wiki-sk-line {
+  height: 12px;
+  margin-top: 10px;
+  border-radius: 6px;
+  background: linear-gradient(90deg, var(--bg-elevated) 0%, #e9ecf1 50%, var(--bg-elevated) 100%);
+  background-size: 200% 100%;
+  animation: wiki-sk-shimmer 1.3s linear infinite;
+}
+
+.wiki-sk-line--title {
+  width: 62%;
+  height: 16px;
+  margin-top: 0;
+}
+
+.wiki-sk-line--meta {
+  width: 38%;
+}
+
+@keyframes wiki-sk-shimmer {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wiki-sk-line {
+    animation: none;
+  }
+}
+
+/* 贡献者排行榜：统计卡 + 榜单卡片 */
+.wiki-contrib-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.wiki-contrib-stat {
+  padding: 16px 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg-card);
+  text-align: center;
+}
+
+.wiki-contrib-stat-num {
+  display: block;
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--text);
+}
+
+.wiki-contrib-stat-label {
+  display: block;
+  margin-top: 4px;
+  font-size: 12.5px;
+  color: var(--text-muted);
+}
+
+.wiki-contrib-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.wiki-contrib-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 15px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg-card);
+}
+
+.wiki-contrib-item--top {
+  border-color: rgba(230, 152, 40, 0.4);
+  background: linear-gradient(180deg, rgba(255, 243, 224, 0.55), var(--bg-card));
+}
+
+.wiki-contrib-rank {
+  flex: 0 0 auto;
+  width: 34px;
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-muted);
+  background: var(--bg-elevated);
+}
+
+.wiki-contrib-rank--top1 { background: #f6c344; color: #6b4d00; }
+.wiki-contrib-rank--top2 { background: #c9d4dd; color: #43505a; }
+.wiki-contrib-rank--top3 { background: #e3b28a; color: #6f4520; }
+
+.wiki-contrib-body {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.wiki-contrib-name {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.wiki-contrib-nick {
+  font-size: 15.5px;
+  font-weight: 600;
+}
+
+.wiki-contrib-crown {
+  font-size: 12px;
+  font-weight: 600;
+  color: #b37400;
+}
+
+.wiki-contrib-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.wiki-contrib-chip {
+  padding: 1px 9px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  font-size: 11.5px;
+  color: var(--text-muted);
+}
+
+.wiki-contrib-chip--guide {
+  border-color: rgba(0, 161, 214, 0.35);
+  color: #0088b8;
+}
+
+.wiki-contrib-chip--edit {
+  border-color: rgba(124, 108, 240, 0.35);
+  color: #5b4dc9;
+}
+
+.wiki-contrib-detail {
+  margin-top: 4px;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.wiki-contrib-when {
+  flex: 0 0 auto;
+  font-size: 12px;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.wiki-contrib-item--skeleton {
+  pointer-events: none;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0;
+}
+
+@media (max-width: 860px) {
+  /* 窄屏下标签排不下一行，标签行改为竖排，标签左对齐 */
+  .wiki-lib-filter {
+    display: block;
+  }
+
+  .wiki-lib-filter-label {
+    display: block;
+    margin-bottom: 6px;
+  }
+}
+
+@media (max-width: 560px) {
+  /* 手机上工具栏重排：搜索独占一行，排序与计数并排一行 */
+  .wiki-lib-toolbar.wiki-card {
+    padding: 12px;
+  }
+
+  .wiki-lib-search {
+    flex: 1 1 100%;
+  }
+
+  .wiki-lib-sort {
+    flex: 0 1 auto;
+    min-width: 0;
+  }
+
+  /* 约 26px 高的 chip 在触屏上不好点，放大到约 34px */
+  .wiki-lib-chip {
+    padding: 6px 12px;
+    font-size: 13px;
+  }
+
+  .wiki-lib-card {
+    padding: 12px 13px;
+  }
+
+  .wiki-lib-card-title {
+    font-size: 15.5px;
+  }
+
+  .wiki-lib-meta {
+    font-size: 12px;
+  }
+
+  /* 空状态里的操作按钮在手机上竖排铺开 */
+  .wiki-lib-empty p:last-child {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  /* 协作条：先给按钮，说明文案挪到下一行，免得按钮被挤成两行 */
+  .wiki-collab-bar {
+    gap: 8px;
+    padding: 6px 12px;
+  }
+
+  .wiki-collab-actions {
+    flex: 1 1 100%;
+    order: 1;
+  }
+
+  .wiki-collab-info {
+    flex: 1 1 100%;
+    order: 2;
+    font-size: 12px;
+  }
+
+  /* 首页首屏：小屏上收紧留白，按钮更容易点 */
+  .hero-banner {
+    padding: 20px 16px 18px;
+  }
+
+  .hero-banner h1 {
+    font-size: 1.5rem;
+  }
+
+  .hero-actions {
+    gap: 8px;
+  }
+
+  .hero-btn {
+    padding: 9px 14px;
+    font-size: 13.5px;
+  }
+
+  /* 阅读页标题与投稿页工具条的小屏适配 */
+  .wiki-article-head h1 {
+    font-size: 20px;
+  }
+
+  .wiki-collab-tool {
+    padding: 7px 12px;
+    font-size: 13px;
+  }
+
+  /* 贡献者榜：小屏上统计卡数字收紧、时间列可换行 */
+  .wiki-contrib-stat-num {
+    font-size: 22px;
+  }
+
+  .wiki-contrib-when {
+    white-space: normal;
+    text-align: right;
+  }
+}
+
+/* ############################################################################
+   视觉世界层
+   —— 上面是旧站的骨架，下面把这套骨架重新画成「玄武 · 江湖」的世界：
+      宣纸为地，墨为字，青为脉，赭金为器，朱砂为印。
+      这一层只改视觉，不动任何版面结构与类名，所以协作层、存档、测试都不受影响。
+   ######################################################################### */
+
+/* ---------------------------------------------------------------- 骨架容器 */
+.wiki-body {
+  max-width: 1240px;
+}
+
+/* 阅读与目录型页面整页收窄居中：一行不必摊到 1000px 宽，
+   目录、导语、正文三块同宽，看起来是一页书而不是一张报表。
+   只在「正文直接挂在 main 下」的文章页生效，审核台的并排 diff 不受影响。 */
+.wiki-body:has(.wiki-main > .article-body) {
+  max-width: 1020px;
+}
+
+.wiki-body:has(.wiki-guide-cta) {
+  max-width: 1000px;
+}
+
+.wiki-main {
+  padding: 26px 30px 64px;
+}
+
+/* ------------------------------------------------------------------ 页头 */
+.wiki-header {
+  height: var(--header-h);
+  padding: 0 20px;
+  gap: 14px;
+  background: var(--bg);
+  background-image: var(--grain);
+  background-size: 160px 160px;
+  border-bottom: 1px solid var(--border);
+  border-top: 3px solid var(--ochre);
+  box-shadow: 0 1px 0 rgba(74, 58, 34, 0.05), 0 6px 18px rgba(74, 58, 34, 0.05);
+}
+
+/* 品牌：只剩站名。原先页头压着一枚 36px 的玄武「印」，在那个尺寸下看不清是龟是蛇，
+   反倒像一块脏东西——去掉，把青铜色还给标题本身。 */
+.wiki-brand {
+  color: var(--text);
+}
+
+.wiki-brand-text {
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+
+/* 搜索：纸上的凹槽 */
+.wiki-search-wrap input,
+.wiki-search input {
+  padding: 9px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-deep);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 14px;
+  transition: border-color 0.18s ease, background-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.wiki-search-wrap input::placeholder,
+.wiki-search input::placeholder {
+  color: var(--text-faint);
+}
+
+.wiki-search-wrap input:focus,
+.wiki-search input:focus {
+  outline: none;
+  background: var(--bg-card);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.wiki-search-btn {
+  padding: 9px 18px;
+  border-radius: var(--radius);
+  background: var(--accent);
+  color: #fdfaf3;
+  font-family: var(--font-body);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  transition: background-color 0.18s ease;
+}
+
+.wiki-search-btn:hover {
+  filter: none;
+  background: var(--accent-strong);
+}
+
+.wiki-search-btn:active {
+  filter: none;
+  background: var(--accent-strong);
+  transform: translateY(1px);
+}
+
+.wiki-search-suggest {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-card);
+  box-shadow: var(--lift-3);
+}
+
+.wiki-search-suggest-item.is-active {
+  background: var(--accent-soft);
+}
+
+.wiki-search-suggest-title {
+  color: var(--text);
+}
+
+.wiki-search-suggest-meta {
+  color: var(--text-faint);
+}
+
+/* ------------------------------------------------------------------ 侧栏 */
+.wiki-sidebar {
+  padding: 20px 14px 32px;
+  border-right: 1px solid var(--border);
+  background: var(--bg-elevated);
+  background-image: var(--grain);
+  background-size: 160px 160px;
+  position: sticky;
+  top: var(--header-h);
+  align-self: flex-start;
+  max-height: calc(100vh - var(--header-h));
+  overflow-y: auto;
+}
+
+.wiki-nav .nav-section {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 20px 0 8px;
+  padding-left: 9px;
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: none;
+  color: var(--text-faint);
+}
+
+.wiki-nav .nav-section::before {
+  content: "";
+  width: 5px;
+  height: 5px;
+  background: var(--ochre);
+  transform: rotate(45deg);
+  flex: 0 0 auto;
+}
+
+.wiki-nav .nav-section:first-child {
+  margin-top: 0;
+}
+
+.wiki-nav .nav-link {
+  position: relative;
+  padding: 8px 10px 8px 22px;
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.5;
+  transition: background-color 0.16s ease, color 0.16s ease;
+}
+
+/* 选中态用「点亮的菱形标记」而不是左侧色条 */
+.wiki-nav .nav-link::before {
+  content: "";
+  position: absolute;
+  left: 9px;
+  top: 50%;
+  width: 5px;
+  height: 5px;
+  margin-top: -2.5px;
+  background: var(--border-strong);
+  transform: rotate(45deg);
+  transition: background-color 0.16s ease, transform 0.16s ease;
+}
+
+.wiki-nav .nav-link:hover {
+  background: rgba(253, 250, 243, 0.7);
+  text-decoration: none;
+}
+
+.wiki-nav .nav-link:hover::before {
+  background: var(--accent);
+}
+
+.wiki-nav .nav-link.active {
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+  font-weight: 700;
+}
+
+.wiki-nav .nav-link.active::before {
+  background: var(--cinnabar);
+  transform: rotate(45deg) scale(1.5);
+}
+
+/* 投稿是侧栏里唯一的「要动手做的事」，单独做成一枚牌 */
+.wiki-nav .nav-link--cta {
+  margin: 8px 0 2px;
+  border: 1px solid rgba(171, 61, 39, 0.4);
+  background: var(--cinnabar-soft);
+  color: var(--cinnabar);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.wiki-nav .nav-link--cta::before {
+  background: var(--cinnabar);
+}
+
+.wiki-nav .nav-link--cta:hover {
+  border-color: var(--cinnabar);
+  background: rgba(171, 61, 39, 0.14);
+  color: var(--cinnabar);
+}
+
+.sidebar-note {
+  margin-top: 26px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+  font-size: 11.5px;
+  line-height: 1.7;
+  letter-spacing: 0.02em;
+  color: var(--text-faint);
+}
+
+/* ---------------------------------------------------------------- 首页卷首 */
+.hero-banner {
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 272px;
+  align-items: center;
+  gap: 30px;
+  padding: 36px 38px;
+  margin-bottom: 34px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--bg-card);
+  box-shadow: var(--lift-2);
+}
+
+/* 书框：外框之内再压一道细线 */
+.hero-banner::before {
+  content: "";
+  position: absolute;
+  inset: 8px;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* 卷首右上角原来还有一根 74×4px 的赭金「鱼尾」（仿古籍版心标记）——
+   高度太小，看着不像装饰、倒像一道划痕，已去掉（响应式里的那条也一并删了）。 */
+
+.hero-text {
+  z-index: 1;
+}
+
+.hero-banner h1 {
+  margin: 0 0 14px;
+  font-size: clamp(2.1rem, 4.6vw, 3.1rem);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: 0.08em;
+  color: var(--text);
+}
+
+.hero-lead {
+  max-width: 30em;
+  margin: 0 0 6px;
+  font-size: 16px;
+  line-height: 1.8;
+  color: var(--text-muted);
+}
+
+.hero-banner p {
+  color: var(--text-muted);
+}
+
+/* 版本行当题跋处理：上面加一道横线 */
+.meta-line {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 18px 0 20px !important;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+  font-size: 12.5px !important;
+  letter-spacing: 0.05em;
+  color: var(--text-faint);
+}
+
+.hero-actions {
+  gap: 10px;
+  margin-top: 0;
+}
+
+/* 按钮做成「压印的牌子」：直角小圆角、细边、暖影。不再用胶囊。 */
+.hero-btn {
+  padding: 10px 18px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  background: var(--bg-card);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  box-shadow: var(--lift-1);
+  transition: transform 0.16s cubic-bezier(0.2, 0.7, 0.3, 1), box-shadow 0.16s ease,
+    border-color 0.16s ease, background-color 0.16s ease, color 0.16s ease;
+}
+
+.hero-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--lift-2);
+  text-decoration: none;
+}
+
+.hero-btn:active {
+  transform: translateY(0) scale(0.985);
+  box-shadow: var(--lift-1);
+}
+
+.hero-btn--primary {
+  background: var(--accent);
+  border-color: var(--accent-strong);
+  color: #fdfaf3;
+  background-image: none;
+}
+
+.hero-btn--primary:hover {
+  background: var(--accent-strong);
+}
+
+.hero-btn--compendium {
+  border-color: rgba(107, 91, 138, 0.45);
+  color: var(--plum);
+}
+
+.hero-btn--compendium:hover {
+  border-color: var(--plum);
+  background: rgba(107, 91, 138, 0.06);
+}
+
+.hero-btn--weapons {
+  border-color: rgba(171, 61, 39, 0.42);
+  color: var(--cinnabar);
+}
+
+.hero-btn--weapons:hover {
+  border-color: var(--cinnabar);
+  background: var(--cinnabar-soft);
+}
+
+.hero-btn--tools {
+  border-color: rgba(60, 90, 120, 0.45);
+  color: var(--indigo);
+}
+
+.hero-btn--tools:hover {
+  border-color: var(--indigo);
+  background: rgba(60, 90, 120, 0.06);
+}
+
+.hero-btn--contributors {
+  border-color: rgba(138, 99, 20, 0.45);
+  color: var(--ochre-ink);
+}
+
+.hero-btn--contributors:hover {
+  border-color: var(--ochre-ink);
+  background: var(--ochre-soft);
+}
+
+/* 卷首右侧的玄武 */
+.hero-art {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+}
+
+.hero-art img {
+  display: block;
+  width: 100%;
+  max-width: 272px;
+  height: auto;
+  filter: drop-shadow(0 18px 26px rgba(74, 58, 34, 0.16));
+  animation: xuanwu-settle 1.1s cubic-bezier(0.2, 0.7, 0.25, 1) both;
+}
+
+@keyframes xuanwu-settle {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.965);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* 今日一句：像书页边上的批注 */
+.hero-spotlight {
+  margin: 20px 0 0 !important;
+  padding: 11px 15px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-elevated);
+  font-size: 13px !important;
+  color: var(--text-muted) !important;
+}
+
+.hero-spotlight a {
+  font-weight: 600;
+}
+
+/* ------------------------------------------------------------ 栏目头与方块 */
+.home-section {
+  margin-bottom: 34px;
+}
+
+.home-section-head {
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+/* 栏目名：菱形印 + 题名 + 一道延伸出去的引线 */
+.home-section-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1 1 auto;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-family: var(--font-display);
+  font-size: 1.32rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  line-height: 1.3;
+  color: var(--text);
+}
+
+.home-section-title::before {
+  content: "";
+  flex: 0 0 auto;
+  width: 8px;
+  height: 8px;
+  background: var(--sec, var(--accent));
+  transform: rotate(45deg);
+}
+
+.home-section-title::after {
+  content: "";
+  flex: 1 1 auto;
+  height: 1px;
+  margin-left: 6px;
+  background-image: repeating-linear-gradient(
+    90deg,
+    var(--border-strong) 0 3px,
+    transparent 3px 9px
+  );
+}
+
+.home-section-title--guide {
+  --sec: var(--tag-guide);
+  border-left-color: transparent;
+}
+
+.home-section-title--compendium {
+  --sec: var(--tag-compendium);
+  border-left-color: transparent;
+}
+
+.home-section-title--map {
+  --sec: var(--indigo);
+  border-left-color: transparent;
+}
+
+.home-section-title--dungeon {
+  --sec: var(--tag-dungeon);
+  border-left-color: transparent;
+}
+
+.home-section-more {
+  flex: 0 0 auto;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+/* 方块：一张张压在纸上的签 */
+.home-tile {
+  position: relative;
+  gap: 7px;
+  padding: 15px 14px 13px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-card);
+  box-shadow: var(--lift-1);
+  transition: transform 0.24s cubic-bezier(0.2, 0.7, 0.3, 1), box-shadow 0.24s ease,
+    border-color 0.24s ease;
+}
+
+.home-tile:hover {
+  transform: translateY(-3px);
+  border-color: var(--sec-line, var(--border-strong));
+  box-shadow: var(--lift-2);
+}
+
+.home-tile--guide {
+  --sec: var(--tag-guide);
+  --sec-line: rgba(171, 61, 39, 0.5);
+}
+
+.home-tile--compendium {
+  --sec: var(--tag-compendium);
+  --sec-line: rgba(107, 91, 138, 0.5);
+}
+
+.home-tile--map {
+  --sec: var(--indigo);
+  --sec-line: rgba(60, 90, 120, 0.5);
+}
+
+.home-tile--dungeon {
+  --sec: var(--tag-dungeon);
+  --sec-line: rgba(138, 99, 20, 0.5);
+}
+
+/* 角标改成「菱形点 + 疏排小字」，比一排实心色块安静得多 */
+.home-tile-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  align-self: flex-start;
+  padding: 0;
+  border-radius: 0;
+  background: none;
+  color: var(--sec, var(--accent));
+  font-family: var(--font-body);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+}
+
+.home-tile-tag::before {
+  content: "";
+  flex: 0 0 auto;
+  width: 5px;
+  height: 5px;
+  background: currentColor;
+  transform: rotate(45deg);
+  transition: transform 0.24s cubic-bezier(0.2, 0.7, 0.3, 1);
+}
+
+.home-tile:hover .home-tile-tag::before {
+  transform: rotate(135deg) scale(1.25);
+}
+
+.home-tile--guide .home-tile-tag,
+.home-tile--compendium .home-tile-tag,
+.home-tile--map .home-tile-tag,
+.home-tile--dungeon .home-tile-tag {
+  background: none;
+  color: var(--sec);
+}
+
+.home-tile-title {
+  font-family: var(--font-display);
+  font-size: 15.5px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  line-height: 1.4;
+}
+
+.home-tile-desc {
+  font-size: 11.5px;
+  line-height: 1.55;
+  color: var(--text-muted);
+}
+
+/* ------------------------------------------------- 卡片 / 目录表 / 标签 */
+.wiki-card {
+  padding: 20px 22px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-card);
+  box-shadow: var(--lift-1);
+}
+
+.wiki-card h2 {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin: 0 0 14px;
+  padding: 0;
+  border: 0;
+  font-family: var(--font-display);
+  font-size: 1.22rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--text);
+}
+
+.wiki-card h2::before {
+  content: "";
+  flex: 0 0 auto;
+  width: 8px;
+  height: 8px;
+  background: var(--accent);
+  transform: rotate(45deg);
+}
+
+/* 目录表：古籍目录的点线引格 */
+.link-table td {
+  padding: 9px 4px;
+  border-bottom: 1px dotted var(--border-strong);
+  vertical-align: middle;
+}
+
+.link-table tr:last-child td {
+  border-bottom: none;
+}
+
+.link-table a {
+  font-weight: 600;
+}
+
+.tag {
+  padding: 2px 7px;
+  border-radius: var(--radius-sm);
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16);
+}
+
+.tag-guide {
+  background: var(--cinnabar);
+}
+
+.tag-res {
+  background: var(--accent);
+}
+
+.tag-dungeon {
+  background: var(--ochre-ink);
+}
+
+.tag-compendium {
+  background: var(--plum);
+}
+
+.card-more {
+  margin-top: 12px;
+  font-weight: 600;
+}
+
+/* 最近更新 */
+.update-list li {
+  padding: 10px 0;
+  gap: 10px;
+  border-bottom: 1px dotted var(--border-strong);
+}
+
+.update-badge {
+  padding: 1px 7px;
+  border-radius: var(--radius-sm);
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+}
+
+.update-list time {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.02em;
+  color: var(--text-faint);
+}
+
+.muted {
+  font-size: 13.5px;
+  color: var(--text-muted);
+}
+
+/* 小快照块（首页地图占位、角色 chips 等） */
+.map-placeholder span {
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--bg-card);
+  color: var(--text-faint);
+}
+
+.char-chips a {
+  padding: 6px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-card);
+  color: var(--text);
+  transition: border-color 0.16s ease, color 0.16s ease, box-shadow 0.16s ease;
+}
+
+.char-chips a:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  box-shadow: var(--lift-1);
+}
+
+/* ------------------------------------------------------------------ 页脚 */
+.wiki-footer {
+  padding: 30px 20px 40px;
+  border-top: 1px solid var(--border);
+  background: var(--bg-elevated);
+  background-image: var(--grain);
+  background-size: 160px 160px;
+  color: var(--text-faint);
+}
+
+.wiki-footer p {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 13.5px;
+  letter-spacing: 0.08em;
+}
+
+.wiki-footer-legal {
+  font-family: var(--font-body);
+  font-size: 11.5px;
+  letter-spacing: 0.02em;
+  line-height: 1.8;
+  opacity: 1;
+}
+
+/* ------------------------------------------------------------ 攻略阅读页 */
+.breadcrumb {
+  font-size: 12.5px;
+  letter-spacing: 0.03em;
+  color: var(--text-faint);
+}
+
+.breadcrumb a {
+  color: var(--text-faint);
+}
+
+.breadcrumb a:hover {
+  color: var(--accent);
+}
+
+.article-header h1,
+.wiki-article-head h1 {
+  font-family: var(--font-display);
+  font-size: clamp(1.75rem, 3.4vw, 2.4rem);
+  font-weight: 700;
+  line-height: 1.28;
+  letter-spacing: 0.05em;
+  color: var(--text);
+}
+
+.wiki-article-meta {
+  font-size: 13px;
+  letter-spacing: 0.03em;
+  color: var(--text-faint);
+}
+
+.wiki-article-tags {
+  gap: 7px;
+  margin-top: 12px;
+}
+
+.wiki-article-tag {
+  padding: 2px 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg-card);
+  color: var(--text-muted);
+  font-size: 11.5px;
+  letter-spacing: 0.06em;
+}
+
+/* 摘要：不再用左侧色条，改用「题下小引」——淡底 + 细框 + 一枚朱砂菱 */
+.wiki-article-lead {
+  position: relative;
+  margin: 18px 0 0;
+  padding: 13px 16px 13px 34px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-elevated);
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+.wiki-article-lead::before {
+  content: "";
+  position: absolute;
+  left: 15px;
+  top: 20px;
+  width: 5px;
+  height: 5px;
+  background: var(--cinnabar);
+  transform: rotate(45deg);
+}
+
+.article-body {
+  padding: 30px 36px 36px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-card);
+  box-shadow: var(--lift-1);
+}
+
+.article-body h2 {
+  font-family: var(--font-display);
+  font-size: 1.22rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  color: var(--text);
+}
+
+.article-body h3 {
+  font-family: var(--font-display);
+  font-size: 1.02rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+.article-body table.data-table th {
+  background: var(--bg-elevated);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.article-body table.data-table th,
+.article-body table.data-table td {
+  border-color: var(--border);
+  padding: 9px 12px;
+}
+
+/* 长文正文 */
+.guide-prose {
+  font-size: 15.5px;
+  line-height: 1.85;
+  letter-spacing: 0.01em;
+}
+
+/* 中文一行 30–45 字最舒服。约束「读的段落」，表格/图版照旧占满。 */
+.guide-prose > p,
+.guide-prose > ul,
+.guide-prose > ol,
+.guide-prose > blockquote,
+.guide-prose > h2,
+.guide-prose > h3,
+.article-body > p,
+.article-body > ul,
+.article-body > ol {
+  max-width: var(--measure);
+}
+
+.guide-prose h2 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 2em 0 0.8em;
+  padding-bottom: 0.45em;
+  border-bottom: 1px solid var(--border);
+  font-family: var(--font-display);
+  font-size: 1.34rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--text);
+}
+
+.guide-prose h2::before {
+  content: "";
+  flex: 0 0 auto;
+  width: 7px;
+  height: 7px;
+  background: var(--cinnabar);
+  transform: rotate(45deg);
+}
+
+.guide-prose h3 {
+  font-family: var(--font-display);
+  font-size: 1.06rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  line-height: 1.55;
+}
+
+.guide-prose h3:has(.guide-tier) {
+  padding: 9px 12px;
+  border: 1px solid var(--border);
+  border-left: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg-elevated);
+}
+
+.guide-entry-name {
+  font-weight: 700;
+}
+
+.guide-prose .guide-entry-name a {
+  text-decoration-color: rgba(47, 107, 94, 0.4);
+}
+
+/* 品阶：做成一枚小小的封签 */
+.guide-tier {
+  min-width: 1.5em;
+  padding: 1px 6px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+}
+
+.guide-tier--s {
+  background: #f2e2bb;
+  color: #6d4c07;
+}
+
+.guide-tier--a {
+  background: #dfe9dd;
+  color: #215545;
+}
+
+.guide-tier--b {
+  background: #dde4ea;
+  color: #2c4c68;
+}
+
+.guide-tier--c {
+  background: #e6e1ec;
+  color: #514169;
+}
+
+.guide-tier--\?,
+.guide-tier--other {
+  background: var(--bg-deep);
+  color: var(--text-muted);
+}
+
+/* 提示块：去掉左侧色条，改为「淡底 + 细框 + 角上一枚菱」 */
+.guide-callout {
+  position: relative;
+  padding: 13px 16px 13px 34px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-elevated);
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+.guide-callout::before {
+  content: "";
+  position: absolute;
+  left: 15px;
+  top: 19px;
+  width: 5px;
+  height: 5px;
+  transform: rotate(45deg);
+  background: var(--accent);
+}
+
+.guide-callout--note {
+  border: 1px solid rgba(47, 107, 94, 0.28);
+  border-left: 1px solid rgba(47, 107, 94, 0.28);
+  background: var(--accent-soft);
+}
+
+.guide-callout--note::before {
+  background: var(--accent);
+}
+
+.guide-callout--tip {
+  border: 1px solid rgba(107, 91, 138, 0.28);
+  border-left: 1px solid rgba(107, 91, 138, 0.28);
+  background: rgba(107, 91, 138, 0.07);
+}
+
+.guide-callout--tip::before {
+  background: var(--plum);
+}
+
+.guide-callout--warn {
+  border: 1px solid rgba(171, 61, 39, 0.32);
+  border-left: 1px solid rgba(171, 61, 39, 0.32);
+  background: var(--cinnabar-soft);
+}
+
+.guide-callout--warn::before {
+  background: var(--cinnabar);
+}
+
+.guide-callout--version {
+  border: 1px solid rgba(138, 99, 20, 0.3);
+  border-left: 1px solid rgba(138, 99, 20, 0.3);
+  background: var(--ochre-soft);
+}
+
+.guide-callout--version::before {
+  background: var(--ochre-ink);
+}
+
+/* 目录（正文内 + 右侧导轨） */
+.toc {
+  padding: 14px 18px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-elevated);
+  font-size: 13.5px;
+}
+
+.toc strong {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-display);
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  color: var(--text-faint);
+}
+
+.toc strong::before {
+  content: "";
+  flex: 0 0 auto;
+  width: 5px;
+  height: 5px;
+  background: var(--ochre);
+  transform: rotate(45deg);
+}
+
+.toc ul {
+  margin: 10px 0 0;
+  padding-left: 4px;
+  list-style: none;
+}
+
+/* 宽屏下目录分两栏，免得一列短条目拖出一大片空白 */
+@media (min-width: 820px) {
+  .toc ul {
+    columns: 2;
+    column-gap: 34px;
+  }
+}
+
+.toc li {
+  padding: 3px 0;
+  break-inside: avoid;
+}
+
+.toc a {
+  display: inline-block;
+  color: var(--text);
+}
+
+.toc a:hover {
+  color: var(--accent);
+}
+
+.guide-toc-rail {
+  padding: 14px 8px 14px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-card);
+  box-shadow: var(--lift-1);
+}
+
+.guide-toc-rail-title {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 10px;
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  color: var(--text-faint);
+}
+
+.guide-toc-rail-title::before {
+  content: "";
+  width: 5px;
+  height: 5px;
+  background: var(--ochre);
+  transform: rotate(45deg);
+}
+
+.guide-toc-rail-list a {
+  position: relative;
+  padding: 6px 8px 6px 18px;
+  margin: 2px 0;
+  border: 0;
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  font-size: 12.5px;
+  line-height: 1.5;
+  transition: background-color 0.16s ease, color 0.16s ease;
+}
+
+.guide-toc-rail-list a::before {
+  content: "";
+  position: absolute;
+  left: 6px;
+  top: 50%;
+  width: 4px;
+  height: 4px;
+  margin-top: -2px;
+  background: var(--border-strong);
+  transform: rotate(45deg);
+}
+
+.guide-toc-rail-list a:hover {
+  background: var(--bg-elevated);
+  color: var(--text);
+}
+
+.guide-toc-rail-list a.is-active {
+  background: var(--accent-soft);
+  border-left-color: transparent;
+  color: var(--accent-strong);
+  font-weight: 700;
+}
+
+.guide-toc-rail-list a.is-active::before {
+  background: var(--cinnabar);
+  transform: rotate(45deg) scale(1.4);
+}
+
+/* 阅读进度：朱砂到赭金，像一行批注慢慢划过去 */
+.guide-read-progress {
+  background: rgba(74, 58, 34, 0.07);
+}
+
+.guide-read-progress span {
+  background: linear-gradient(90deg, var(--cinnabar), var(--ochre));
+}
+
+/* 文末相关阅读：这本身就是一张卡，里面再套一圈带框的小块就是「卡里套卡」，改成普通链接 */
+.guide-related a {
+  color: var(--accent);
+  font-weight: 600;
+  text-underline-offset: 0.22em;
+}
+
+.guide-related a:hover {
+  text-decoration: underline;
+  text-decoration-color: rgba(47, 107, 94, 0.5);
+}
+
+.article-toolbar input {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-card);
+}
+
+.back-to-top {
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  background: var(--bg-card);
+  color: var(--text);
+  box-shadow: var(--lift-2);
+}
+
+.back-to-top:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* ================================================================== 图鉴 */
+.compendium-toolbar input[type="search"],
+.martial-toolbar input[type="search"],
+.skill-page-search,
+.martial-toolbar-search input {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-card);
+  color: var(--text);
+}
+
+.compendium-toolbar input[type="search"]:focus,
+.martial-toolbar input[type="search"]:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.compendium-sticky-toolbar {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-card);
+  box-shadow: var(--lift-2);
+}
+
+.compendium-toolbar-toggle,
+.martial-filter-btn,
+.skill-filter-btn,
+.equip-variant-btn {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg-card);
+  color: var(--text);
+  transition: border-color 0.16s ease, background-color 0.16s ease, color 0.16s ease;
+}
+
+.compendium-toolbar-toggle:hover,
+.martial-filter-btn:hover,
+.skill-filter-btn:hover,
+.equip-variant-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.martial-filter-btn.active,
+.skill-filter-btn.active,
+.equip-variant-btn.active {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: #fdfaf3;
+  font-weight: 600;
+}
+
+.compendium-toolbar-hint,
+.compendium-toolbar-summary,
+.martial-count,
+.skill-count {
+  color: var(--text-faint);
+}
+
+/* 图鉴分类图例：旧站的 Material 淡色换成同一套墨色 */
+.legend-role {
+  border-color: rgba(171, 61, 39, 0.35);
+  color: #8d3320;
+  background: var(--cinnabar-soft);
+}
+
+.legend-partner {
+  border-color: rgba(60, 90, 120, 0.35);
+  color: #2f4c68;
+  background: rgba(60, 90, 120, 0.09);
+}
+
+.legend-team {
+  border-color: rgba(107, 91, 138, 0.35);
+  color: #514169;
+  background: rgba(107, 91, 138, 0.09);
+}
+
+.legend-debuff {
+  border-color: rgba(47, 107, 94, 0.32);
+  color: #235247;
+  background: var(--accent-soft);
+}
+
+.legend-general {
+  border-color: rgba(138, 99, 20, 0.32);
+  color: var(--ochre-ink);
+  background: var(--ochre-soft);
+}
+
+/* 角色卡 */
+.char-compendium-avatar {
+  border-radius: var(--radius-sm);
+  background: var(--bg-elevated);
+  box-shadow: inset 0 0 0 1px var(--border);
+}
+
+.char-avatar-placeholder {
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--bg-elevated);
+  font-family: var(--font-display);
+  color: var(--text-faint);
+}
+
+.char-card-name,
+.char-personality-name {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+
+.char-personality-desc,
+.char-compact-line,
+.char-obtain-line,
+.char-game-name {
+  color: var(--text-muted);
+}
+
+.char-label {
+  color: var(--text-faint);
+  font-weight: 600;
+}
+
+.char-talent-line {
+  color: var(--text);
+}
+
+/* 武功属性标签：深墨压浅底，不用刺眼的纯色块 */
+.char-martial-tag {
+  border-radius: var(--radius-sm);
+  background: var(--bg-deep);
+  color: var(--text-muted);
+  box-shadow: none;
+}
+
+.char-martial-fist {
+  background: rgba(171, 61, 39, 0.1);
+  color: #8d3320;
+}
+
+.char-martial-sword {
+  background: rgba(60, 90, 120, 0.1);
+  color: #2f4c68;
+}
+
+.char-martial-blade {
+  background: rgba(47, 107, 94, 0.11);
+  color: #235247;
+}
+
+.char-martial-any {
+  background: rgba(107, 91, 138, 0.1);
+  color: #514169;
+}
+
+/* 品阶点（0–6 阶）走一条由灰到金的阶梯 */
+.martial-star {
+  border-radius: var(--radius-sm);
+}
+
+.martial-star-0 {
+  background: var(--bg-deep);
+  color: var(--text-muted);
+}
+
+.martial-star-1 {
+  background: #e3ded2;
+  color: #5c5340;
+}
+
+.martial-star-2 {
+  background: #dbe4e0;
+  color: #34574c;
+}
+
+.martial-star-3 {
+  background: #d9e2e9;
+  color: #2f4c68;
+}
+
+.martial-star-4 {
+  background: #e2dceb;
+  color: #514169;
+}
+
+.martial-star-5 {
+  background: #f0e2c2;
+  color: #6d4c07;
+}
+
+.martial-star-6 {
+  background: #f0d6c9;
+  color: #8d3320;
+}
+
+/* 卡片：一律回到「细框 + 暖影」的纸签，不再用左侧色条区分 */
+.martial-card,
+.equip-card,
+.skill-card,
+.internal-neigong-card,
+.wiki-lib-card {
+  border: 1px solid var(--border);
+  border-left: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-card);
+  box-shadow: var(--lift-1);
+}
+
+.skill-card {
+  border-left-width: 1px;
+}
+
+.skill-cat-role,
+.skill-cat-partner,
+.skill-cat-team,
+.skill-cat-debuff,
+.skill-cat-general {
+  border-left-color: var(--border);
+}
+
+/* 分类色改挂到标签上 */
+.skill-cat-tag,
+.martial-type-tag {
+  border-radius: var(--radius-sm);
+  background: var(--bg-deep);
+  color: var(--text-muted);
+  box-shadow: none;
+}
+
+.skill-cat-role .skill-cat-tag,
+.martial-type-1 .martial-type-tag {
+  background: rgba(171, 61, 39, 0.11);
+  color: #8d3320;
+}
+
+.skill-cat-partner .skill-cat-tag {
+  background: rgba(60, 90, 120, 0.11);
+  color: #2f4c68;
+}
+
+.skill-cat-team .skill-cat-tag {
+  background: rgba(107, 91, 138, 0.11);
+  color: #514169;
+}
+
+.skill-cat-debuff .skill-cat-tag {
+  background: rgba(47, 107, 94, 0.12);
+  color: #235247;
+}
+
+.skill-cat-general .skill-cat-tag,
+.martial-type-2 .martial-type-tag,
+.martial-type-3 .martial-type-tag {
+  background: var(--ochre-soft);
+  color: var(--ochre-ink);
+}
+
+.martial-name,
+.skill-name,
+.equip-title-row .martial-name {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+
+.martial-stats dt,
+.equip-attr-dl dt {
+  color: var(--text-faint);
+}
+
+.martial-stats dd,
+.equip-attr-dl dd {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.martial-effect-item {
+  border-radius: var(--radius-sm);
+  background: var(--bg-elevated);
+}
+
+.martial-effect-item:hover {
+  background: var(--accent-soft);
+  box-shadow: var(--lift-1);
+}
+
+.martial-effect-name {
+  font-family: var(--font-display);
+  font-weight: 700;
+}
+
+.equip-icon,
+.equip-quality-badge {
+  border-radius: var(--radius-sm);
+}
+
+.equip-quality-badge {
+  background: var(--bg-deep);
+  color: var(--text-muted);
+  box-shadow: inset 0 0 0 1px var(--border);
+}
+
+.equip-enhance-chip {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg-elevated);
+}
+
+.equip-flavor,
+.internal-manual-desp,
+.martial-summary {
+  color: var(--text-muted);
+}
+
+/* 内功页的注意事项：同样去掉左色条 */
+.internal-neigong-card .internal-special-note {
+  position: relative;
+  padding: 11px 14px 11px 32px;
+  border: 1px solid rgba(171, 61, 39, 0.3);
+  border-left: 1px solid rgba(171, 61, 39, 0.3);
+  border-radius: var(--radius);
+  background: var(--cinnabar-soft);
+}
+
+.internal-neigong-card .internal-special-note::before {
+  content: "";
+  position: absolute;
+  left: 14px;
+  top: 17px;
+  width: 5px;
+  height: 5px;
+  background: var(--cinnabar);
+  transform: rotate(45deg);
+}
+
+.internal-pre-line,
+.internal-manual-desp {
+  border-left: 1px solid var(--border);
+  padding-left: 12px;
+}
+
+.internal-goodskill-list li {
+  border-bottom: 1px dotted var(--border-strong);
+}
+
+/* ================================================================== 地图 */
+.map-city-grid a,
+.map-place-btn {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg-card);
+  color: var(--text);
+  transition: border-color 0.16s ease, color 0.16s ease, box-shadow 0.16s ease;
+}
+
+.map-city-grid a:hover,
+.map-place-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  box-shadow: var(--lift-1);
+}
+
+.map-place-btn.is-active {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: #fdfaf3;
+}
+
+.map-place-count,
+.map-dungeon-note {
+  color: var(--text-faint);
+}
+
+.map-quest-block h3,
+.map-dungeon-block h3,
+.map-dungeon-section-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+.map-quest-side {
+  border-left: 1px solid var(--border);
+}
+
+.map-dungeon-section-title {
+  border-left: 1px solid var(--border);
+  padding-left: 12px;
+}
+
+.map-island-step {
+  border-left: 1px solid var(--border);
+}
+
+.map-dungeon-floor,
+.map-dungeon-floor-num {
+  border-radius: var(--radius-sm);
+}
+
+/* ============================================================ 面板攻击计算 */
+.panel-calc-kicker {
+  display: none;
+}
+
+.panel-calc-hero h1 {
+  font-family: var(--font-display);
+  font-size: clamp(1.7rem, 3.2vw, 2.2rem);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+.panel-calc-lead,
+.panel-calc-source,
+.panel-calc-field-hint {
+  color: var(--text-muted);
+}
+
+.panel-calc-section h2,
+.panel-calc-aside-title,
+.panel-calc-result-details-title,
+.panel-calc-arts-rules-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+.panel-calc-arts-rules-title {
+  color: var(--text-faint);
+}
+
+.panel-calc-field select,
+.panel-calc-combo-input,
+.panel-calc-field input[type="number"] {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg-card);
+  color: var(--text);
+}
+
+.panel-calc-field select:focus,
+.panel-calc-combo-input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.panel-calc-combo-list {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-card);
+  box-shadow: var(--lift-3);
+}
+
+.panel-calc-combo-option.is-active,
+.panel-calc-forge-option.is-selected {
+  background: var(--accent-soft);
+}
+
+.panel-calc-section-badge {
+  border-radius: var(--radius-sm);
+  background: var(--bg-deep);
+  color: var(--text-muted);
+}
+
+.panel-calc-stat-card,
+.panel-calc-aside-inner,
+.panel-calc-result,
+.panel-calc-fold {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-card);
+  box-shadow: var(--lift-1);
+}
+
+.panel-calc-stat-card--primary {
+  border-color: rgba(47, 107, 94, 0.35);
+  background: var(--accent-soft);
+}
+
+.panel-calc-stat-card--accent {
+  border-color: rgba(138, 99, 20, 0.32);
+  background: var(--ochre-soft);
+}
+
+.panel-calc-stat-card--dmg {
+  border-color: rgba(171, 61, 39, 0.3);
+  background: var(--cinnabar-soft);
+}
+
+.panel-calc-stat-label {
+  color: var(--text-faint);
+  letter-spacing: 0.06em;
+}
+
+.panel-calc-stat-value {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--text);
+}
+
+.panel-calc-stat-card--primary .panel-calc-stat-value {
+  color: var(--accent-strong);
+}
+
+.panel-calc-result-row {
+  border-bottom: 1px dotted var(--border-strong);
+}
+
+.panel-calc-result dt {
+  color: var(--text-faint);
+}
+
+.panel-calc-result dd {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.panel-calc-fold-summary {
+  border-bottom: 1px solid var(--border);
+}
+
+.panel-calc-formula-list li {
+  color: var(--text-muted);
+}
+
+/* ==================================================== 协作层 / 审核 / 投稿 */
+.wiki-collab-bar {
+  padding: 8px 20px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-elevated);
+  background-image: var(--grain);
+  background-size: 160px 160px;
+  color: var(--text-muted);
+}
+
+.wiki-collab-info,
+.wiki-collab-user {
+  letter-spacing: 0.02em;
+  color: var(--text-faint);
+}
+
+.wiki-collab-btn {
+  padding: 5px 12px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--bg-card);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  transition: border-color 0.16s ease, color 0.16s ease, background-color 0.16s ease;
+}
+
+.wiki-collab-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--bg-card);
+}
+
+.wiki-collab-btn--primary {
+  background: var(--accent);
+  border-color: var(--accent-strong);
+  color: #fdfaf3;
+}
+
+.wiki-collab-btn--primary:hover {
+  background: var(--accent-strong);
+  color: #fdfaf3;
+  opacity: 1;
+}
+
+.wiki-collab-btn--ghost {
+  background: transparent;
+  border-color: var(--border);
+}
+
+.wiki-collab-btn:disabled {
+  opacity: 0.5;
+}
+
+.wiki-collab-badge {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg-card);
+  color: var(--text-muted);
+}
+
+.wiki-collab-dialog {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-card);
+  box-shadow: var(--lift-3);
+}
+
+.wiki-collab-overlay {
+  background: rgba(29, 36, 34, 0.5);
+}
+
+.wiki-collab-dialog-head,
+.wiki-collab-dialog-foot {
+  border-color: var(--border);
+}
+
+.wiki-collab-dialog-head h2 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+.wiki-collab-tool {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg-card);
+  color: var(--text);
+}
+
+.wiki-collab-tool:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.wiki-collab-tool--accent {
+  border-color: rgba(171, 61, 39, 0.4);
+  color: var(--cinnabar);
+}
+
+.wiki-collab-editor,
+.wiki-collab-labelled input,
+.wiki-collab-labelled textarea,
+.wiki-entry-input,
+.wiki-lib-search,
+.wiki-lib-sort,
+.wiki-submit-form textarea {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg-card);
+  color: var(--text);
+  font-family: var(--font-body);
+}
+
+.wiki-collab-editor:focus,
+.wiki-collab-labelled input:focus,
+.wiki-collab-labelled textarea:focus,
+.wiki-entry-input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.wiki-collab-field-label,
+.wiki-collab-labelled > span,
+.wiki-submit-req {
+  color: var(--text-faint);
+  letter-spacing: 0.02em;
+}
+
+.wiki-collab-hint {
+  color: var(--text-faint);
+}
+
+/* 编辑态的可编辑区域：用朱砂虚线框，和正文明显区分 */
+.wiki-editable {
+  border-radius: var(--radius-sm);
+}
+
+/* 审核台 */
+.wiki-review-tabs {
+  border-bottom: 1px solid var(--border);
+}
+
+.wiki-review-tab {
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  background: transparent;
+  color: var(--text-muted);
+}
+
+.wiki-review-tab.is-active {
+  border-color: var(--border);
+  border-bottom-color: var(--bg-card);
+  background: var(--bg-card);
+  color: var(--accent-strong);
+  font-weight: 700;
+}
+
+.wiki-review-card {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-card);
+  box-shadow: var(--lift-1);
+}
+
+.wiki-review-card h3 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.wiki-review-note,
+.wiki-review-preview,
+.wiki-review-block.is-new .wiki-review-preview {
+  border: 1px solid var(--border);
+  border-left: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg-elevated);
+}
+
+.wiki-review-stats,
+.wiki-review-region-tag,
+.wiki-review-kind,
+.wiki-mine-kind,
+.wiki-mine-status,
+.wiki-history-tag {
+  border-radius: var(--radius-sm);
+}
+
+.wiki-review-region-tag,
+.wiki-review-kind,
+.wiki-mine-kind {
+  background: var(--bg-deep);
+  color: var(--text-muted);
+}
+
+.wiki-review-state {
+  border-radius: var(--radius-sm);
+  background: var(--bg-deep);
+  color: var(--text-muted);
+}
+
+/* 差异高亮：加=墨青底，删=朱砂底（中文习惯里红是「被改掉」最直观的提示） */
+.wiki-diff-add {
+  background: rgba(47, 107, 94, 0.14);
+  color: #1d4a3f;
+}
+
+.wiki-diff-del {
+  background: rgba(171, 61, 39, 0.13);
+  color: #8d3320;
+}
+
+.wiki-diff-add-tag {
+  background: var(--accent);
+  color: #fdfaf3;
+  border-radius: var(--radius-sm);
+}
+
+.wiki-diff-del-tag {
+  background: var(--cinnabar);
+  color: #fdfaf3;
+  border-radius: var(--radius-sm);
+}
+
+.wiki-review-diffwrap > summary,
+.wiki-collab-diffwrap > summary {
+  color: var(--text-muted);
+}
+
+.wiki-review-diff {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg-elevated);
+}
+
+.wiki-mine-status.is-pending {
+  background: var(--ochre-soft);
+  color: var(--ochre-ink);
+}
+
+.wiki-mine-status.is-approved {
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+}
+
+.wiki-mine-status.is-rejected {
+  background: var(--cinnabar-soft);
+  color: var(--cinnabar);
+}
+
+/* 图鉴条目编辑入口 */
+.wiki-entry-btn {
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--bg-card);
+  color: var(--text);
+}
+
+.wiki-entry-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.wiki-entry-note,
+.wiki-entry-host {
+  border-left: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg-elevated);
+}
+
+.wiki-entry-note strong {
+  font-family: var(--font-display);
+}
+
+.wiki-entry-btn--history {
+  border-color: rgba(107, 91, 138, 0.45);
+  color: var(--plum);
+}
+
+/* 修订历史弹层 */
+.wiki-history-sub,
+.wiki-history-meta,
+.wiki-history-footinfo,
+.wiki-history-empty,
+.wiki-history-loading {
+  color: var(--text-faint);
+}
+
+.wiki-history-item {
+  border-bottom: 1px dotted var(--border-strong);
+}
+
+.wiki-history-item:hover {
+  background: var(--bg-elevated);
+}
+
+.wiki-history-item.is-active {
+  background: var(--accent-soft);
+}
+
+.wiki-history-ver {
+  font-family: var(--font-mono);
+  border-radius: var(--radius-sm);
+}
+
+.wiki-history-item.is-current .wiki-history-ver {
+  background: var(--accent);
+  color: #fdfaf3;
+}
+
+.wiki-history-tag--revert {
+  background: var(--cinnabar-soft);
+  color: var(--cinnabar);
+}
+
+.wiki-history-panel,
+.wiki-history-content {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-elevated);
+}
+
+.wiki-history-preview-head {
+  border-bottom: 1px solid var(--border);
+}
+
+.wiki-history-content .wiki-history-title {
+  font-family: var(--font-display);
+}
+
+/* ================================================ 攻略库 / 攻略目录 / 投稿 */
+.wiki-lib-head h2 {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-family: var(--font-display);
+  font-size: 1.28rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.wiki-lib-head h2::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  background: var(--cinnabar);
+  transform: rotate(45deg);
+}
+
+.wiki-lib-more {
+  font-weight: 600;
+}
+
+.wiki-lib-chip,
+.wiki-lib-tag,
+.wiki-lib-cat,
+.wiki-contrib-chip {
+  padding: 3px 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg-card);
+  color: var(--text-muted);
+  letter-spacing: 0.04em;
+  transition: border-color 0.16s ease, color 0.16s ease, background-color 0.16s ease;
+}
+
+.wiki-lib-chip:hover,
+.wiki-lib-tag:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.wiki-lib-chip.is-active {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: #fdfaf3;
+  font-weight: 600;
+}
+
+.wiki-lib-count,
+.wiki-lib-meta,
+.wiki-lib-filter-label {
+  color: var(--text-faint);
+}
+
+.wiki-lib-card-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+
+.wiki-lib-summary {
+  color: var(--text-muted);
+}
+
+/* 攻略清单：桌面端排两栏，十条上下的内容不至于铺成一条长卷；
+   手机上仍是单栏（.wiki-lib-body 基础规则就是单列网格）。 */
+@media (min-width: 1024px) {
+  .wiki-lib-body {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
+  }
+}
+
+.wiki-lib-empty {
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--radius);
+  background: var(--bg-elevated);
+  color: var(--text-muted);
+}
+
+.wiki-sk-line {
+  background: linear-gradient(
+    90deg,
+    var(--bg-deep) 0%,
+    #efe8da 50%,
+    var(--bg-deep) 100%
+  );
+  background-size: 200% 100%;
+}
+
+.wiki-guide-cta {
+  gap: 12px;
+}
+
+.wiki-guide-item {
+  border-top: 1px dotted var(--border-strong);
+}
+
+.wiki-guide-link {
+  font-family: var(--font-display);
+  font-size: 15.5px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+
+.wiki-guide-summary {
+  color: var(--text-muted);
+}
+
+.wiki-guide-meta {
+  color: var(--text-faint);
+}
+
+.wiki-submit-tips li {
+  color: var(--text-muted);
+}
+
+.wiki-submit-count {
+  color: var(--text-faint);
+  font-variant-numeric: tabular-nums;
+}
+
+.wiki-submit-editor h2 {
+  font-family: var(--font-display);
+  font-weight: 700;
+}
+
+.wiki-submit-opt {
+  color: var(--text-faint);
+}
+
+.wiki-mine-guide dl,
+.wiki-mine-guide-body {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-elevated);
+}
+
+.wiki-mine-guide dt {
+  color: var(--text-faint);
+}
+
+.wiki-mine-guide dd {
+  color: var(--text);
+}
+
+.wiki-mine-reason {
+  border-left: 1px solid rgba(171, 61, 39, 0.3);
+  border-radius: var(--radius-sm);
+  background: var(--cinnabar-soft);
+  color: var(--cinnabar);
+}
+
+.wiki-guide-preview h2,
+.wiki-guide-preview .article-body {
+  border-radius: var(--radius);
+}
+
+/* ============================================================== 贡献者榜 */
+.wiki-contrib-stats {
+  gap: 14px;
+}
+
+.wiki-contrib-stat {
+  padding: 20px 16px 18px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-card);
+  box-shadow: var(--lift-1);
+}
+
+.wiki-contrib-stat-num {
+  font-family: var(--font-display);
+  font-size: 2.1rem;
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: 0.02em;
+  color: var(--accent-strong);
+}
+
+.wiki-contrib-stat-label {
+  margin-top: 6px;
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  color: var(--text-faint);
+}
+
+.wiki-contrib-item {
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-card);
+  box-shadow: var(--lift-1);
+  transition: transform 0.2s cubic-bezier(0.2, 0.7, 0.3, 1), box-shadow 0.2s ease;
+}
+
+.wiki-contrib-item:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--lift-2);
+}
+
+.wiki-contrib-item--top {
+  border-color: rgba(138, 99, 20, 0.35);
+  background: linear-gradient(180deg, rgba(184, 134, 43, 0.09), var(--bg-card) 62%);
+}
+
+/* 名次章：由圆改方，像一枚编号印 */
+.wiki-contrib-rank {
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-deep);
+  color: var(--text-muted);
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.wiki-contrib-rank--top1 {
+  background: #e8c877;
+  color: #5d4104;
+}
+
+.wiki-contrib-rank--top2 {
+  background: #cfd7dc;
+  color: #3b4850;
+}
+
+.wiki-contrib-rank--top3 {
+  background: #dcb08c;
+  color: #5c3a1c;
+}
+
+.wiki-contrib-nick {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+
+.wiki-contrib-crown {
+  padding: 1px 7px;
+  border-radius: var(--radius-sm);
+  background: var(--ochre-soft);
+  color: var(--ochre-ink);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.wiki-contrib-chip--guide {
+  border-color: rgba(171, 61, 39, 0.4);
+  color: var(--cinnabar);
+}
+
+.wiki-contrib-chip--edit {
+  border-color: rgba(47, 107, 94, 0.4);
+  color: var(--accent);
+}
+
+.wiki-contrib-detail,
+.wiki-contrib-when {
+  color: var(--text-faint);
+}
+
+.wiki-contrib-when {
+  font-variant-numeric: tabular-nums;
+}
+
+.wiki-contrib-item--skeleton {
+  box-shadow: none;
+}
+
+/* 归属说明：菱形引首，不用色条 */
+.wiki-contrib-note {
+  margin: 0 0 18px;
+  font-size: 12.5px;
+  line-height: 1.8;
+  color: var(--text-faint);
+}
+
+.wiki-contrib-note::before {
+  content: "";
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  margin-right: 8px;
+  background: var(--ochre);
+  transform: rotate(45deg) translateY(-1px);
+}
+
+.wiki-contrib-foot {
+  margin: 18px 0 0;
+  font-size: 12.5px;
+  line-height: 1.8;
+  text-align: center;
+  color: var(--text-faint);
+}
+
+/* 分摊比例条：长度＝本人份额，色段＝攻略 / 改动 的构成。
+   宽度封顶，免得撑满整行、看着像卡片下沿的色条 */
+.wiki-contrib-meter {
+  width: min(200px, 100%);
+  height: 5px;
+  margin-top: 12px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-deep);
+  overflow: hidden;
+}
+
+.wiki-contrib-meter-bar {
+  display: flex;
+  height: 100%;
+  min-width: 8%;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  transition: width 0.4s cubic-bezier(0.2, 0.7, 0.3, 1);
+}
+
+.wiki-contrib-meter-seg {
+  display: block;
+  height: 100%;
+}
+
+.wiki-contrib-meter-seg--guide {
+  background: var(--cinnabar);
+}
+
+.wiki-contrib-meter-seg--edit {
+  background: var(--accent);
+}
+
+/* 补漏：旧规则里还剩几处直接写死的深色，一并归到这套墨色 */
+.legend-item {
+  border-color: var(--border);
+  background: var(--bg-card);
+  color: var(--text-muted);
+}
+
+.internal-neigong-card .internal-special-note strong {
+  color: var(--cinnabar);
+}
+
+.martial-unlock-base {
+  background: var(--text-faint);
+  color: #fdfaf3;
+}
+
+.map-dungeon-drop-meta dd {
+  color: var(--cinnabar);
+}
+
+/* ================================================================== 动效 */
+/* 只留一个「有意的瞬间」：卷首入场。其余靠 hover 的微交互，不做逐段同款入场。 */
+@keyframes wiki-rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+    filter: blur(3px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: blur(0);
+  }
+}
+
+.hero-text > * {
+  animation: wiki-rise 0.72s cubic-bezier(0.2, 0.7, 0.25, 1) both;
+}
+
+.hero-text > *:nth-child(1) {
+  animation-delay: 0.06s;
+}
+
+.hero-text > *:nth-child(2) {
+  animation-delay: 0.13s;
+}
+
+.hero-text > *:nth-child(3) {
+  animation-delay: 0.2s;
+}
+
+.hero-text > *:nth-child(4) {
+  animation-delay: 0.27s;
+}
+
+.hero-text > *:nth-child(5) {
+  animation-delay: 0.34s;
+}
+
+.hero-text > *:nth-child(6) {
+  animation-delay: 0.4s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-text > *,
+  .hero-art img {
+    animation: none;
+  }
+}
+
+/* ================================================ 图鉴里的「获取」留白 */
+/* 技艺图鉴早就有这一栏，武功 / 内功 / 装备三页补齐。
+   数据一律留空 —— 空槽本身就是给玩家的入口，协作层会在里面挂一个「补充」按钮。 */
+.martial-obtain {
+  margin: 0 0 8px;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--text-muted);
+}
+
+.martial-obtain strong {
+  color: var(--text);
+  font-weight: 600;
+}
+
+/* 空槽排成一行：标签 · 待补充 · 补充按钮 */
+.martial-obtain.is-empty {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 6px;
+  margin-bottom: 10px;
+}
+
+/* 一道 1px 虚线，读作「这里还空着」，不用色块也不占高度 */
+.martial-obtain-blank {
+  color: var(--text-faint);
+  border-bottom: 1px dashed var(--border-strong);
+}
+
+/* 空槽里的直达入口：比「纠错」更主动一点，用玄武青点一下 */
+.wiki-entry-slot-btn {
+  align-self: center;
+  border-color: rgba(47, 107, 94, 0.42);
+  color: var(--accent);
+}
+
+.wiki-entry-slot-btn:hover {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+/* 补漏：玩家补充区块原来挂着 3px 青色左条，违反「不用 >1px 彩色边条」，
+   改成设计系统里的菱形引首 + 发丝内框 */
+.wiki-entry-note {
+  border-left: 0;
+  border-radius: var(--radius);
+  box-shadow: inset 0 0 0 1px var(--border);
+}
+
+.wiki-entry-note strong {
+  position: relative;
+  padding-left: 13px;
+  color: var(--ochre-ink);
+  letter-spacing: 0.08em;
+}
+
+.wiki-entry-note strong::before {
+  content: "";
+  position: absolute;
+  left: 1px;
+  top: 0.42em;
+  width: 5px;
+  height: 5px;
+  background: var(--ochre);
+  transform: rotate(45deg);
+}
+
+/* ============================================================ 响应式收束 */
+/* 这一层的规则写在最后，用来覆盖上面旧站在窄屏下的尺寸档位，
+   同时把侧栏的抽屉行为重新声明回来（基础层把 position 改成了 sticky）。 */
+@media (max-width: 1080px) {
+  .hero-banner {
+    grid-template-columns: minmax(0, 1fr) 220px;
+    gap: 22px;
+    padding: 30px 30px 28px;
+  }
+
+  .hero-art img {
+    max-width: 220px;
+  }
+}
+
+@media (max-width: 900px) {
+  .hero-banner {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 18px;
+    padding: 28px 26px 26px;
+  }
+
+  .hero-banner::before {
+    inset: 6px;
+  }
+
+  .hero-art {
+    order: 2;
+  }
+
+  .hero-art img {
+    max-width: 168px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .home-tile {
+    padding: 13px 12px 11px;
+  }
+
+  .home-tile-title {
+    font-size: 14px;
+  }
+
+  .home-tile-desc {
+    font-size: 11px;
+  }
+
+  .home-section-title {
+    font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 860px) {
+  .home-tile {
+    gap: 6px;
+    padding: 11px 10px 9px;
+  }
+
+  .home-tile-title {
+    font-size: 13px;
+  }
+
+  .home-tile-desc {
+    font-size: 10.5px;
+  }
+
+  .home-section-title {
+    font-size: 1.1rem;
+    gap: 8px;
+  }
+
+  .home-section-title::before {
+    width: 7px;
+    height: 7px;
+  }
+
+  .article-body {
+    padding: 22px 20px 26px;
+  }
+
+  .guide-prose {
+    font-size: 15px;
+    line-height: 1.8;
+  }
+}
+
+@media (max-width: 768px) {
+  /* 侧栏回到抽屉形态 */
+  .wiki-sidebar {
+    position: fixed;
+    top: var(--header-h);
+    left: 0;
+    bottom: 0;
+    z-index: 90;
+    width: 250px;
+    max-height: none;
+    align-self: auto;
+    transform: translateX(-100%);
+    transition: transform 0.24s cubic-bezier(0.2, 0.7, 0.3, 1);
+    box-shadow: 6px 0 28px rgba(74, 58, 34, 0.18);
+    overflow-y: auto;
+  }
+
+  .wiki-sidebar.open {
+    transform: translateX(0);
+  }
+
+  .wiki-main {
+    padding: 18px 16px 48px;
+  }
+
+  .wiki-header {
+    padding: 0 14px;
+    gap: 10px;
+  }
+
+  .wiki-search input,
+  .wiki-search-wrap input {
+    padding: 8px 12px;
+  }
+
+  .wiki-search-btn {
+    padding: 8px 13px;
+  }
+
+  .wiki-collab-bar {
+    padding: 8px 14px;
+  }
+}
+
+@media (max-width: 560px) {
+  .wiki-header {
+    border-top-width: 2px;
+  }
+
+  .hero-banner {
+    padding: 22px 18px 20px;
+    gap: 14px;
+    margin-bottom: 26px;
+  }
+
+  .hero-banner::before {
+    inset: 5px;
+  }
+
+  .hero-banner h1 {
+    font-size: 1.72rem;
+    letter-spacing: 0.06em;
+  }
+
+  .hero-lead {
+    font-size: 14.5px;
+  }
+
+  .meta-line {
+    margin: 14px 0 16px !important;
+    padding-top: 12px;
+    font-size: 12px !important;
+  }
+
+  .hero-actions {
+    gap: 8px;
+  }
+
+  .hero-btn {
+    padding: 9px 14px;
+    font-size: 13px;
+    letter-spacing: 0.04em;
+  }
+
+  .hero-art img {
+    max-width: 140px;
+  }
+
+  .home-section {
+    margin-bottom: 26px;
+  }
+
+  .home-tile {
+    gap: 4px;
+    padding: 9px 8px 8px;
+  }
+
+  .home-tile-tag {
+    gap: 4px;
+    font-size: 9.5px;
+    letter-spacing: 0.14em;
+  }
+
+  .home-tile-tag::before {
+    width: 4px;
+    height: 4px;
+  }
+
+  .home-tile-title {
+    font-size: 12px;
+  }
+
+  .home-tile-desc {
+    font-size: 10px;
+  }
+
+  .home-section-more {
+    font-size: 12px;
+  }
+
+  .wiki-card {
+    padding: 16px 15px;
+  }
+
+  .wiki-card h2 {
+    font-size: 1.1rem;
+  }
+
+  .article-body {
+    padding: 18px 15px 22px;
+  }
+
+  .wiki-article-head h1 {
+    font-size: 1.35rem;
+  }
+
+  .wiki-lib-head h2 {
+    font-size: 1.14rem;
+  }
+
+  .wiki-lib-chip,
+  .wiki-lib-tag {
+    padding: 6px 12px;
+    font-size: 12.5px;
+  }
+
+  .wiki-contrib-stat-num {
+    font-size: 1.6rem;
+  }
+
+  .wiki-contrib-stat {
+    padding: 15px 12px 13px;
+  }
+
+  .wiki-contrib-nick {
+    font-size: 15px;
+  }
+
+  .guide-prose h2 {
+    font-size: 1.16rem;
+  }
+}
+
+

@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#f4efe4" />
+  <title>玄武攻略 WIKI · 首页</title>
+  <link rel="stylesheet" href="css/wiki.css?v=20261018a" />
+</head>
+<body data-wiki-depth="0">
+  <div class="wiki-shell">
+    <header class="wiki-header">
+      <button type="button" class="nav-toggle" id="navToggle" aria-label="打开菜单"><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M2.5 5h13M2.5 9h13M2.5 13h13" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></button>
+      <a class="wiki-brand" href="index.html">
+        <span class="wiki-brand-text">玄武攻略 WIKI</span>
+      </a>
+      <div class="wiki-search">
+        <input type="search" id="globalSearch" placeholder="搜索攻略、技能、地点…" autocomplete="off" />
+      </div>
+    </header>
+
+    <div class="wiki-body">
+      <aside class="wiki-sidebar" id="sidebar">
+        <nav class="wiki-nav" id="wikiNav" data-active="home"></nav>
+        <p class="sidebar-note">玄武版玩家攻略 · 非官方 · 以游戏内为准</p>
+      </aside>
+
+      <main class="wiki-main">
+        <section class="hero-banner">
+          <div class="hero-text">
+            <h1>玄武攻略 WIKI</h1>
+            <p class="hero-lead">全攻略、开局路线、图鉴与 2.06 武器表</p>
+            <p class="meta-line">站点更新：<time datetime="2026-10-03">114514 年 91 月 78 日</time></p>
+            <div class="hero-actions">
+              <a class="hero-btn hero-btn--primary" href="articles/beginner-master.html">新手上路</a>
+              <a class="hero-btn hero-btn--compendium" href="pages/compendium.html">浏览图鉴</a>
+              <a class="hero-btn hero-btn--weapons" href="articles/weapons-xuanwu-206.html">武器获取 2.13</a>
+              <a class="hero-btn hero-btn--tools" href="pages/panel-attack.html">面板攻击计算</a>
+              <a class="hero-btn hero-btn--contributors" href="pages/contributors.html">贡献者</a>
+            </div>
+            <p class="hero-spotlight" id="heroSpotlight" hidden></p>
+          </div>
+          <div class="hero-art" aria-hidden="true">
+            <img
+              src="assets/images/xuanwu-hero.webp"
+              alt=""
+              width="520"
+              height="438"
+              decoding="async"
+              fetchpriority="high"
+            />
+          </div>
+        </section>
+
+        <section class="home-section" data-wiki-edit data-wiki-label="首页栏目">
+          <div class="home-section-head">
+            <h2 class="home-section-title home-section-title--guide">游戏攻略</h2>
+            <a class="home-section-more" href="pages/guide-list.html">攻略大全 →</a>
+          </div>
+          <div class="home-tile-grid home-tile-grid--row5">
+            <a class="home-tile home-tile--guide" href="articles/full-guide-xuanwu.html">
+              <span class="home-tile-tag">攻略</span>
+              <span class="home-tile-title">玄武版全攻略</span>
+              <span class="home-tile-desc">门派 · 副本 · 总览（10.30）</span>
+            </a>
+            <a class="home-tile home-tile--guide" href="articles/xuanwu-integrated-guide.html">
+              <span class="home-tile-tag">攻略</span>
+              <span class="home-tile-title">玄武攻略整合</span>
+              <span class="home-tile-desc">角色 · 技艺 · 令牌与结局线</span>
+            </a>
+            <a class="home-tile home-tile--guide" href="articles/beginner-master.html">
+              <span class="home-tile-tag">攻略</span>
+              <span class="home-tile-title">开局从入门到精通</span>
+              <span class="home-tile-desc">前期资源与路线精简</span>
+            </a>
+            <a class="home-tile home-tile--guide" href="articles/early-internal-guide-206.html">
+              <span class="home-tile-tag">攻略</span>
+              <span class="home-tile-title">前期内功推荐</span>
+              <span class="home-tile-desc">2.06 · cbas 与任督取舍</span>
+            </a>
+            <a class="home-tile home-tile--guide" href="articles/weapons-xuanwu-206.html">
+              <span class="home-tile-tag">攻略</span>
+              <span class="home-tile-title">武器获取 2.13</span>
+              <span class="home-tile-desc">刀剑拳 · 铸造与掉落</span>
+            </a>
+          </div>
+        </section>
+
+        <section class="home-section" data-wiki-edit data-wiki-label="首页栏目">
+          <div class="home-section-head">
+            <h2 class="home-section-title home-section-title--map">世界地图</h2>
+            <a class="home-section-more" href="pages/map.html">进入地图 →</a>
+          </div>
+          <div class="home-tile-grid home-tile-grid--row5">
+            <a class="home-tile home-tile--map" href="pages/map.html?place=沧州">
+              <span class="home-tile-tag">地区</span>
+              <span class="home-tile-title">沧州</span>
+              <span class="home-tile-desc">开篇剧情 · 前期路线</span>
+            </a>
+            <a class="home-tile home-tile--map" href="pages/map.html?place=洛阳">
+              <span class="home-tile-tag">地区</span>
+              <span class="home-tile-title">洛阳</span>
+              <span class="home-tile-desc">主线篇章 · 铁砂掌与郊野</span>
+            </a>
+            <a class="home-tile home-tile--map" href="pages/map.html?place=苏州">
+              <span class="home-tile-tag">地区</span>
+              <span class="home-tile-title">苏州</span>
+              <span class="home-tile-desc">苏州篇 · 游方和尚支线</span>
+            </a>
+            <a class="home-tile home-tile--map" href="pages/map.html?place=襄阳">
+              <span class="home-tile-tag">地区</span>
+              <span class="home-tile-title">襄阳</span>
+              <span class="home-tile-desc">襄阳篇 · 太虚刀支线</span>
+            </a>
+            <a class="home-tile home-tile--map" href="pages/map.html?place=大理">
+              <span class="home-tile-tag">地区</span>
+              <span class="home-tile-title">大理</span>
+              <span class="home-tile-desc">大理主线 · 狸猫换太子等</span>
+            </a>
+          </div>
+        </section>
+
+        <section class="home-section" id="homeDungeons" data-wiki-edit data-wiki-label="副本栏目">
+          <div class="home-section-head">
+            <h2 class="home-section-title home-section-title--dungeon">副本</h2>
+            <a class="home-section-more" href="pages/map.html#map-region-副本">地图 · 副本分区 →</a>
+          </div>
+          <nav class="home-tile-grid home-tile-grid--row5 home-dungeon-nav" aria-label="副本快捷入口">
+            <a class="home-tile home-tile--dungeon" href="pages/map.html?place=罗汉洞">
+              <span class="home-tile-tag">副本</span>
+              <span class="home-tile-title">罗汉洞</span>
+              <span class="home-tile-desc">前期元宝 · 商店</span>
+            </a>
+            <a class="home-tile home-tile--dungeon" href="pages/map.html?place=冥离地宫">
+              <span class="home-tile-tag">副本</span>
+              <span class="home-tile-title">冥离地宫</span>
+              <span class="home-tile-desc">万剑鸣 · 佛喃邪典等</span>
+            </a>
+            <a class="home-tile home-tile--dungeon" href="pages/map.html?place=五龙塔">
+              <span class="home-tile-tag">副本</span>
+              <span class="home-tile-title">五龙塔</span>
+              <span class="home-tile-desc">定秦剑 · 嬴荒等</span>
+            </a>
+            <a class="home-tile home-tile--dungeon" href="pages/map.html?place=白虎岭">
+              <span class="home-tile-tag">副本</span>
+              <span class="home-tile-title">白虎岭</span>
+              <span class="home-tile-desc">天伤 · 八转等毕业掉落</span>
+            </a>
+            <a class="home-tile home-tile--dungeon" href="pages/map.html?place=玄武岛">
+              <span class="home-tile-tag">副本</span>
+              <span class="home-tile-title">玄武岛</span>
+              <span class="home-tile-desc">八卦图解 · 玄武纹甲</span>
+            </a>
+            <a class="home-tile home-tile--dungeon" href="pages/map.html?place=凤鸣山">
+              <span class="home-tile-tag">副本</span>
+              <span class="home-tile-title">凤鸣山</span>
+              <span class="home-tile-desc">太一 · 朱雀戒等</span>
+            </a>
+            <a class="home-tile home-tile--dungeon" href="pages/map.html?place=华山论剑">
+              <span class="home-tile-tag">副本</span>
+              <span class="home-tile-title">华山论剑</span>
+              <span class="home-tile-desc">五绝机制 · 先天功等</span>
+            </a>
+            <a class="home-tile home-tile--dungeon" href="pages/map.html?place=无间地狱">
+              <span class="home-tile-tag">副本</span>
+              <span class="home-tile-title">无间地狱</span>
+              <span class="home-tile-desc">神魔伞 · 舞鬼等</span>
+            </a>
+          </nav>
+        </section>
+
+        <section class="home-section" data-wiki-edit data-wiki-label="首页栏目">
+          <div class="home-section-head">
+            <h2 class="home-section-title home-section-title--compendium">图鉴</h2>
+            <a class="home-section-more" href="pages/compendium.html">全部图鉴 →</a>
+          </div>
+          <div class="home-tile-grid home-tile-grid--row5">
+            <a class="home-tile home-tile--compendium" href="pages/compendium/characters.html">
+              <span class="home-tile-tag">图鉴</span>
+              <span class="home-tile-title">角色</span>
+              <span class="home-tile-desc">成长 · 天赋 · 入队</span>
+            </a>
+            <a class="home-tile home-tile--compendium" href="pages/compendium/skills.html">
+              <span class="home-tile-tag">图鉴</span>
+              <span class="home-tile-title">武功</span>
+              <span class="home-tile-desc">拳剑刀 · 品阶与招式</span>
+            </a>
+            <a class="home-tile home-tile--compendium" href="pages/compendium/arts.html">
+              <span class="home-tile-tag">图鉴</span>
+              <span class="home-tile-title">技艺</span>
+              <span class="home-tile-desc">生活技能与全队被动</span>
+            </a>
+            <a class="home-tile home-tile--compendium" href="pages/compendium/internal.html">
+              <span class="home-tile-tag">图鉴</span>
+              <span class="home-tile-title">内功</span>
+              <span class="home-tile-desc">词条合并 · C B A S</span>
+            </a>
+            <a class="home-tile home-tile--compendium" href="pages/compendium/equipment.html">
+              <span class="home-tile-tag">图鉴</span>
+              <span class="home-tile-title">装备</span>
+              <span class="home-tile-desc">多品质 · 属性对照</span>
+            </a>
+          </div>
+        </section>
+
+        <section class="wiki-card" data-wiki-edit data-wiki-label="最近更新">
+          <h2>最近更新</h2>
+          <ul class="update-list" id="recentUpdates">
+            <li><span class="update-badge">更新</span> <a href="articles/full-guide-xuanwu.html">玄武版全攻略（10.30）</a> <time datetime="2026-10-30">10-30</time></li>
+            <li><span class="update-badge">更新</span> <a href="pages/compendium/arts.html">技艺图鉴</a> <time datetime="2026-10-01">10-01</time></li>
+            <li><span class="update-badge">更新</span> <a href="articles/beginner-master.html">开局从入门到精通</a> <time datetime="2026-10-01">10-01</time></li>
+            <li><span class="update-badge">更新</span> <a href="articles/early-internal-guide-206.html">前期内功推荐（2.06）</a> <time datetime="2026-10-03">10-03</time></li>
+            <li><span class="update-badge">更新</span> <a href="articles/weapons-xuanwu-206.html">武器获取（2.13）</a> <time datetime="2026-10-01">10-01</time></li>
+          </ul>
+        </section>
+      </main>
+    </div>
+
+    <footer class="wiki-footer">
+      <p>玄武攻略 WIKI· 数据以游戏内与群公告为准</p>
+    </footer>
+  </div>
+  <script src="js/search-index.js"></script>
+  <script src="js/wiki.js?v=20261018a"></script>
+  <script src="js/site-nav.js"></script>
+  <script src="js/home-spotlight.js"></script>
+</body>
+</html>

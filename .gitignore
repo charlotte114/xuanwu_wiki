@@ -1,0 +1,27 @@
+# 角色图鉴构建用原始资源（体积大，本地 import-game-data.bat 生成）
+game-data/doc.json
+game-data/strings.xml
+game-data/res_head/res_head.png
+game-data/res_icon/res_icon.png
+
+# 工具与项目的本地缓存（含内部备忘、应用配置，不要公开）
+.workbuddy/
+.wbapp_*.genie
+
+# Python 构建脚本的产物
+__pycache__/
+*.pyc
+scripts/_audit_out.txt
+
+# 编辑器 / 系统
+*.iml
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# 临时文件
+*.log
+*.tmp
+_*.html
